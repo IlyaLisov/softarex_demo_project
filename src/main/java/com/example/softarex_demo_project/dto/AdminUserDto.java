@@ -18,6 +18,7 @@ public class AdminUserDto {
     private String lastName;
     private String email;
     private String status;
+    private String phoneNumber;
 
     public static AdminUserDto fromUser(User user) {
         AdminUserDto adminUserDto = new AdminUserDto();
@@ -27,6 +28,7 @@ public class AdminUserDto {
         adminUserDto.setLastName(user.getLastName());
         adminUserDto.setEmail(user.getEmail());
         adminUserDto.setStatus(user.getStatus().name());
+        adminUserDto.setPhoneNumber(user.getPhoneNumber());
         return adminUserDto;
     }
 
@@ -38,6 +40,7 @@ public class AdminUserDto {
         user.setLastName(lastName);
         user.setEmail(email);
         user.setStatus(Status.valueOf(status));
+        user.setPhoneNumber(phoneNumber);
         return user;
     }
 
@@ -87,5 +90,13 @@ public class AdminUserDto {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

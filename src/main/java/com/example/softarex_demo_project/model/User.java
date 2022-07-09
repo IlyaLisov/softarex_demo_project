@@ -9,7 +9,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +20,7 @@ import java.util.List;
  */
 @Entity
 @Table(name = "users")
-public class User extends BaseEntity {
+public class User extends BaseEntity implements Cloneable {
     @Column(name = "username", unique = true)
     private String username;
 
@@ -35,6 +35,9 @@ public class User extends BaseEntity {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "phone_number")
+    private String phoneNumber;
 
     @JsonIgnore
     @ManyToMany(fetch = FetchType.EAGER)
@@ -103,6 +106,14 @@ public class User extends BaseEntity {
         this.roles = roles;
     }
 
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -117,5 +128,16 @@ public class User extends BaseEntity {
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
                 '}';
+    }
+
+    @Override
+    public User clone() {
+        try {
+            User clone = (User) super.clone();
+            clone.setRoles(new ArrayList<>(roles));
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

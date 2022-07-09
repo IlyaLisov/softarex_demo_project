@@ -2,16 +2,15 @@ package com.example.softarex_demo_project.rest.authentication;
 
 import com.example.softarex_demo_project.dto.AuthenticationRequestDto;
 import com.example.softarex_demo_project.model.User;
-import com.example.softarex_demo_project.repository.RoleRepository;
 import com.example.softarex_demo_project.security.jwt.JwtTokenProvider;
 import com.example.softarex_demo_project.service.UserService;
-import com.sun.javaws.exceptions.MissingFieldException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,8 +40,16 @@ public class AuthenticationRestControllerV1 {
     @Autowired
     private UserService userService;
 
+    @GetMapping("login")
+    public ResponseEntity login() {
+        Map<Object, Object> response = new HashMap<>();
+        response.put("email", "");
+        response.put("password", "");
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("login")
-    public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto) {
+    public ResponseEntity doLogin(@RequestBody AuthenticationRequestDto requestDto) {
         Map<Object, Object> response = new HashMap<>();
         try {
             String username = requestDto.getUsername();
@@ -60,17 +67,23 @@ public class AuthenticationRestControllerV1 {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("register")
+    public ResponseEntity register() {
+        Map<Object, Object> response = new HashMap<>();
+        response.put("email", "");
+        response.put("password", "");
+        response.put("confirmPassword", "");
+        response.put("firstName", "");
+        response.put("lastName", "");
+        response.put("phoneNumber", "");
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("register")
-    public ResponseEntity register(HttpServletRequest request) {
+    public ResponseEntity doRegister(HttpServletRequest request) {
         Map<Object, Object> response = new HashMap<>();
         User user = new User();
         try {
-            if (request.getParameter("firstName") == null) {
-                throw new Exception("First name is missing.");
-            }
-            if (request.getParameter("lastName") == null) {
-                throw new Exception("Last name is missing.");
-            }
             if (request.getParameter("email") == null) {
                 throw new Exception("Email is missing.");
             }
@@ -88,6 +101,7 @@ public class AuthenticationRestControllerV1 {
             user.setUsername(request.getParameter("email"));
             user.setEmail(request.getParameter("email"));
             user.setPassword(request.getParameter("password"));
+            user.setPhoneNumber(request.getParameter("phoneNumber"));
             if(userService.register(user)) {
                 response.put("message", "Successfully registered with username " + user.getUsername());
             } else {

@@ -16,6 +16,7 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String email;
+    private String phoneNumber;
 
     public static UserDto fromUser(User user) {
         UserDto userDto = new UserDto();
@@ -24,6 +25,7 @@ public class UserDto {
         userDto.setFirstName(user.getFirstName());
         userDto.setLastName(user.getLastName());
         userDto.setEmail(user.getEmail());
+        userDto.setPhoneNumber(user.getPhoneNumber());
         return userDto;
     }
 
@@ -34,6 +36,7 @@ public class UserDto {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setEmail(email);
+        user.setPhoneNumber(phoneNumber);
         return user;
     }
 
@@ -75,5 +78,13 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +42,8 @@ public class UserServiceImplementation implements UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setRoles(userRoles);
             user.setStatus(Status.ACTIVE);
+            user.setCreated(new Date());
+            user.setUpdated(new Date());
             userRepository.save(user);
             return true;
         } else {
@@ -58,7 +61,26 @@ public class UserServiceImplementation implements UserService {
     }
 
     public Optional<User> getById(Long id) {
-        return Optional.ofNullable(userRepository.findById(id).orElse(null));
+        return userRepository.findById(id);
+    }
+
+    public boolean update(User user) {
+        Optional<User> userFromDatabase = userRepository.findById(user.getId());
+        if (userFromDatabase.isPresent()) {
+            userFromDatabase.get().setFirstName(user.getFirstName());
+            userFromDatabase.get().setLastName(user.getLastName());
+            userFromDatabase.get().setEmail(user.getEmail());
+            userFromDatabase.get().setUsername(user.getEmail());
+            userFromDatabase.get().setPhoneNumber(user.getPhoneNumber());
+            //if password hasn`t changed OR CHANGED TO ITS HASH then it must be encoded
+            if (!user.getPassword().equals(userFromDatabase.get().getPassword())) {
+                userFromDatabase.get().setPassword(passwordEncoder.encode(user.getPassword()));
+            }
+            userFromDatabase.get().setUpdated(new Date());
+            userRepository.save(userFromDatabase.get());
+            return true;
+        }
+        return false;
     }
 
     @Override
