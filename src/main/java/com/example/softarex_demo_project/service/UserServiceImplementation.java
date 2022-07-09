@@ -31,16 +31,21 @@ public class UserServiceImplementation implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User register(User user) {
-        Role roleUser = roleRepository.findByName("ROLE_USER");
-        List<Role> userRoles = new ArrayList<>();
-        userRoles.add(roleUser);
+    public boolean register(User user) {
+        User userFromDatabase = userRepository.findByUsername(user.getUsername());
+        if(userFromDatabase == null) {
+            Role roleUser = roleRepository.findByName("ROLE_USER");
+            List<Role> userRoles = new ArrayList<>();
+            userRoles.add(roleUser);
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        user.setRoles(userRoles);
-        user.setStatus(Status.ACTIVE);
-
-        return userRepository.save(user);
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setRoles(userRoles);
+            user.setStatus(Status.ACTIVE);
+            userRepository.save(user);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

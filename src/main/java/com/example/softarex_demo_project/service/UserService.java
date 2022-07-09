@@ -12,7 +12,7 @@ import java.util.Optional;
  * @version 1.0
  */
 public interface UserService {
-    User register(User user);
+    boolean register(User user);
 
     List<User> getAll();
 
