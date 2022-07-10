@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -52,7 +53,7 @@ public class UserRestControllerV1 {
     public ResponseEntity<Object> doEditUserById(@PathVariable(name = "id") Long id, HttpServletRequest request) {
         Optional<User> user = userService.getById(id);
         if (!user.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         user = Optional.of(user.get().clone());
         Map<Object, Object> response = new HashMap<>();
@@ -87,6 +88,29 @@ public class UserRestControllerV1 {
             response.put("error", e.getMessage());
             response.put("user", UserDto.fromUser(user.get()));
         }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping("{id}/delete")
+    public ResponseEntity delete(@PathVariable(name = "id") Long id) {
+        Optional<User> user = userService.getById(id);
+        if(!user.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Map<Object, Object> response = new HashMap<>();
+        response.put("password", "");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @DeleteMapping("{id}/delete")
+    public ResponseEntity doDelete(@PathVariable(name = "id") Long id) {
+        Map<Object, Object> response = new HashMap<>();
+        Optional<User> user = userService.getById(id);
+        if(!user.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        userService.delete(id);
+        response.put("message", "User " + user.get().getUsername() + " was successfully deleted.");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
