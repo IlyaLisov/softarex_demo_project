@@ -1,6 +1,6 @@
 package com.example.softarex_demo_project.security.jwt;
 
-import com.example.softarex_demo_project.model.Role;
+import com.example.softarex_demo_project.model.user.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;

@@ -1,8 +1,8 @@
 package com.example.softarex_demo_project.security;
 
-import com.example.softarex_demo_project.model.User;
+import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.security.jwt.JwtUserFactory;
-import com.example.softarex_demo_project.service.UserService;
+import com.example.softarex_demo_project.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

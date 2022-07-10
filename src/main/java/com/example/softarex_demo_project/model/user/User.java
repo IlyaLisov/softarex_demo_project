@@ -1,5 +1,6 @@
-package com.example.softarex_demo_project.model;
+package com.example.softarex_demo_project.model.user;
 
+import com.example.softarex_demo_project.model.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.Column;

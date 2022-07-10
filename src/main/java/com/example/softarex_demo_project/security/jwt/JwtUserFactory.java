@@ -1,8 +1,8 @@
 package com.example.softarex_demo_project.security.jwt;
 
-import com.example.softarex_demo_project.model.Role;
 import com.example.softarex_demo_project.model.Status;
-import com.example.softarex_demo_project.model.User;
+import com.example.softarex_demo_project.model.user.Role;
+import com.example.softarex_demo_project.model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 

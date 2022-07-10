@@ -1,6 +1,6 @@
 package com.example.softarex_demo_project.repository;
 
-import com.example.softarex_demo_project.model.User;
+import com.example.softarex_demo_project.model.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

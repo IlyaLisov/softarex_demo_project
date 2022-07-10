@@ -1,8 +1,8 @@
-package com.example.softarex_demo_project.service;
+package com.example.softarex_demo_project.service.users;
 
-import com.example.softarex_demo_project.model.Role;
 import com.example.softarex_demo_project.model.Status;
-import com.example.softarex_demo_project.model.User;
+import com.example.softarex_demo_project.model.user.Role;
+import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.repository.RoleRepository;
 import com.example.softarex_demo_project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;

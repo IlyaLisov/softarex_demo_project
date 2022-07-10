@@ -1,9 +1,9 @@
 package com.example.softarex_demo_project.rest.authentication;
 
 import com.example.softarex_demo_project.dto.AuthenticationRequestDto;
-import com.example.softarex_demo_project.model.User;
+import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.security.jwt.JwtTokenProvider;
-import com.example.softarex_demo_project.service.UserService;
+import com.example.softarex_demo_project.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

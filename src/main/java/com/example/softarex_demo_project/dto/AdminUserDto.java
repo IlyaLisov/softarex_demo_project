@@ -1,7 +1,7 @@
 package com.example.softarex_demo_project.dto;
 
 import com.example.softarex_demo_project.model.Status;
-import com.example.softarex_demo_project.model.User;
+import com.example.softarex_demo_project.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**

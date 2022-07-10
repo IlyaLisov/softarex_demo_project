@@ -1,6 +1,6 @@
-package com.example.softarex_demo_project.service;
+package com.example.softarex_demo_project.service.users;
 
-import com.example.softarex_demo_project.model.User;
+import com.example.softarex_demo_project.model.user.User;
 
 import java.util.List;
 import java.util.Optional;
