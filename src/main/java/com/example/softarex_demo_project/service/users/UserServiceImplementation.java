@@ -5,6 +5,7 @@ import com.example.softarex_demo_project.model.user.Role;
 import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.repository.RoleRepository;
 import com.example.softarex_demo_project.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.Optional;
  * @version 1.0
  */
 @Service
+@Slf4j
 public class UserServiceImplementation implements UserService {
     @Autowired
     private UserRepository userRepository;
@@ -45,23 +47,39 @@ public class UserServiceImplementation implements UserService {
             user.setCreated(new Date());
             user.setUpdated(new Date());
             userRepository.save(user);
+            log.info("IN register - User {} was registered.", user);
             return true;
         } else {
+            log.warn("IN UserService.register - User {} was not registered - username already exists.", user);
             return false;
         }
     }
 
     @Override
     public List<User> getAll() {
-        return userRepository.findAll();
+        List<User> users = userRepository.findAll();
+        log.info("IN UserService.getAll - {} users were found.", users.size());
+        return users;
     }
 
     public Optional<User> getByUsername(String username) {
-        return Optional.ofNullable(userRepository.findByUsername(username));
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            log.warn("IN UserService.getByUsername - User {} was not found.", username);
+        } else {
+            log.info("IN UserService.getByUsername - User {} was found.", username);
+        }
+        return Optional.ofNullable(user);
     }
 
     public Optional<User> getById(Long id) {
-        return userRepository.findById(id);
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            log.info("IN UserService.getById - User {} was found.", user.get());
+        } else {
+            log.warn("IN UserService.getById - User with id {} was not found.", id);
+        }
+        return user;
     }
 
     public boolean update(User user) {
@@ -78,13 +96,16 @@ public class UserServiceImplementation implements UserService {
             }
             userFromDatabase.get().setUpdated(new Date());
             userRepository.save(userFromDatabase.get());
+            log.info("IN UserService.update - User {} was updated.", user);
             return true;
         }
+        log.info("IN UserService.update - User {} was not updated.", user);
         return false;
     }
 
     @Override
     public void delete(Long id) {
+        log.info("IN UserService.delete - User with id {} was deleted.", id);
         userRepository.deleteById(id);
     }
 }

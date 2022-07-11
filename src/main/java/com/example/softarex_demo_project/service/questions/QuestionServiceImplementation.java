@@ -2,6 +2,7 @@ package com.example.softarex_demo_project.service.questions;
 
 import com.example.softarex_demo_project.model.question.Question;
 import com.example.softarex_demo_project.repository.QuestionRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,22 +17,32 @@ import java.util.Optional;
  * @version 1.0
  */
 @Service
+@Slf4j
 public class QuestionServiceImplementation implements QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
 
     @Override
     public List<Question> getAll() {
-        return questionRepository.findAll();
+        List<Question> questions = questionRepository.findAll();
+        log.info("IN QuestionService.getAll - {} questions were found.", questions.size());
+        return questions;
     }
 
     @Override
     public Optional<Question> getById(Long id) {
-        return questionRepository.findById(id);
+        Optional<Question> question = questionRepository.findById(id);
+        if (question.isPresent()) {
+            log.info("IN QuestionService.getById - Question {} was found.", question.get());
+        } else {
+            log.warn("IN QuestionService.getById - Question with id {} was not found.", id);
+        }
+        return question;
     }
 
     @Override
     public void save(Question question) {
+        log.info("IN QuestionService.save - Question {} was saved.", question);
         questionRepository.save(question);
     }
 
@@ -45,13 +56,16 @@ public class QuestionServiceImplementation implements QuestionService {
             questionFromDatabase.get().setAnswerEntity(question.getAnswerEntity());
             questionFromDatabase.get().setUpdated(new Date());
             questionRepository.save(questionFromDatabase.get());
+            log.info("IN QuestionService.update - Question {} was updated.", question);
             return true;
         }
+        log.warn("IN QuestionService.getById - Question {} was not updated.", question);
         return false;
     }
 
     @Override
-    public void delete(Question question) {
-        questionRepository.deleteById(question.getId());
+    public void delete(Long id) {
+        log.info("IN QuestionService.delete - Question with id {} was deleted.", id);
+        questionRepository.deleteById(id);
     }
 }

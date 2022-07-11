@@ -20,5 +20,5 @@ public interface QuestionService {
 
     boolean update(Question question);
 
-    void delete(Question question);
+    void delete(Long id);
 }

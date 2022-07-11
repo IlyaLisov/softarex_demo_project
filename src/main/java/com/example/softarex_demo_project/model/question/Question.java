@@ -2,12 +2,18 @@ package com.example.softarex_demo_project.model.question;
 
 import com.example.softarex_demo_project.model.BaseEntity;
 import com.example.softarex_demo_project.model.user.User;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.util.Objects;
 
 /**
  * This class is a question class.
@@ -17,60 +23,36 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "questions")
+@Getter
+@Setter
+@ToString
 public class Question extends BaseEntity {
     @ManyToOne
+    @NonNull
     private User author;
 
     @ManyToOne
+    @NonNull
     private User recipient;
 
     @Column(name = "question")
+    @NonNull
     private String question;
 
     @OneToOne
+    @NonNull
     private AnswerEntity answerEntity;
 
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
-
-    public User getRecipient() {
-        return recipient;
-    }
-
-    public void setRecipient(User recipient) {
-        this.recipient = recipient;
-    }
-
-    public String getQuestion() {
-        return question;
-    }
-
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public AnswerEntity getAnswerEntity() {
-        return answerEntity;
-    }
-
-    public void setAnswerEntity(AnswerEntity answerEntity) {
-        this.answerEntity = answerEntity;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Question question = (Question) o;
+        return Objects.equals(id, question.id);
     }
 
     @Override
-    public String toString() {
-        return "Question{" +
-                "id=" + id +
-                ", created=" + created +
-                ", author=" + author +
-                ", recipient=" + recipient +
-                ", question='" + question + '\'' +
-                ", answerEntity=" + answerEntity +
-                '}';
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

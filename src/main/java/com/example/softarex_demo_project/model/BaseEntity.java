@@ -1,5 +1,10 @@
 package com.example.softarex_demo_project.model;
 
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -11,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * This class is a base class for entities.
@@ -19,52 +25,40 @@ import java.util.Date;
  * @version 1.0
  */
 @MappedSuperclass
+@Getter
+@Setter
+@ToString
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @NonNull
     protected Long id;
 
     @CreatedDate
     @Column(name = "created")
+    @NonNull
     protected Date created;
 
     @LastModifiedDate
     @Column(name = "updated")
+    @NonNull
     protected Date updated;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @NonNull
     protected Status status;
 
-    public Long getId() {
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        BaseEntity that = (BaseEntity) o;
+        return Objects.equals(id, that.id);
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public Date getUpdated() {
-        return updated;
-    }
-
-    public void setUpdated(Date updated) {
-        this.updated = updated;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

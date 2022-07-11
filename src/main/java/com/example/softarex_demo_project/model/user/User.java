@@ -2,6 +2,11 @@ package com.example.softarex_demo_project.model.user;
 
 import com.example.softarex_demo_project.model.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -12,6 +17,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This class describes user entities.
@@ -21,8 +27,12 @@ import java.util.List;
  */
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@ToString
 public class User extends BaseEntity implements Cloneable {
     @Column(name = "username", unique = true)
+    @NonNull
     private String username;
 
     @Column(name = "first_name")
@@ -32,9 +42,11 @@ public class User extends BaseEntity implements Cloneable {
     private String lastName;
 
     @Column(name = "email", unique = true)
+    @NonNull
     private String email;
 
     @Column(name = "password")
+    @NonNull
     private String password;
 
     @Column(name = "phone_number")
@@ -59,78 +71,6 @@ public class User extends BaseEntity implements Cloneable {
         this.roles = roles;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public List<Role> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(List<Role> roles) {
-        this.roles = roles;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", created=" + created +
-                ", updated=" + updated +
-                ", status=" + status +
-                ", username='" + username + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", roles=" + roles +
-                '}';
-    }
-
     @Override
     public User clone() {
         try {
@@ -140,5 +80,18 @@ public class User extends BaseEntity implements Cloneable {
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
