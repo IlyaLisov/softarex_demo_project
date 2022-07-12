@@ -25,15 +25,13 @@ import java.util.Objects;
 @Getter
 @Setter
 @ToString
-public class AnswerEntity extends BaseEntity {
+public abstract class AnswerEntity extends BaseEntity {
     @Column(name = "answer_type")
     @Enumerated(value = EnumType.STRING)
     @NonNull
     protected AnswerType answerType;
 
-    public Object getAnswer() {
-        return null;
-    }
+    public abstract Object getAnswer();
 
     @Override
     public boolean equals(Object o) {

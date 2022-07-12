@@ -91,17 +91,6 @@ public class UserRestControllerV1 {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("{id}/delete")
-    public ResponseEntity delete(@PathVariable(name = "id") Long id) {
-        Optional<User> user = userService.getById(id);
-        if(!user.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        Map<Object, Object> response = new HashMap<>();
-        response.put("password", "");
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
     @DeleteMapping("{id}/delete")
     public ResponseEntity doDelete(@PathVariable(name = "id") Long id) {
         Map<Object, Object> response = new HashMap<>();

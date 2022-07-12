@@ -28,12 +28,11 @@ public class QuestionsRestControllerV1 {
     private QuestionService questionService;
 
     @GetMapping
-    public ResponseEntity<List<QuestionDto>> getAllQuestions() {
+    public List<QuestionDto> getAllQuestions() {
         List<Question> questions = questionService.getAll();
-        List<QuestionDto> result = questions.stream()
+        return questions.stream()
                 .map(QuestionDto::fromQuestion)
                 .collect(Collectors.toList());
-        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping(value = "{id}")

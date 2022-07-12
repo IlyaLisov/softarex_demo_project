@@ -9,10 +9,17 @@ import java.util.Locale;
  * @version 1.0
  */
 public enum AnswerType {
-    SINGLE_LINE_TEXT, MULTILINE_TEXT, RADIO_BUTTON, CHECKBOX, COMBOBOX, DATE;
+    SINGLE_LINE_TEXT("Single line text"), MULTILINE_TEXT("Multiline text"), RADIO_BUTTON("Radiobutton"),
+    CHECKBOX("Checkbox"), COMBOBOX("Combobox"), DATE("Date");
+
+    private final String name;
+
+    AnswerType(String name) {
+        this.name = name;
+    }
 
     @Override
     public String toString() {
-        return (name().charAt(0) + name().substring(1).toLowerCase(Locale.ROOT)).replaceAll("_", " ");
+        return name;
     }
 }

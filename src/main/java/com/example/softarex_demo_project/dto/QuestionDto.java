@@ -16,16 +16,16 @@ import lombok.Data;
 @Data
 public class QuestionDto {
     private Long id;
-    private User author;
-    private User recipient;
+    private UserDto author;
+    private UserDto recipient;
     private String question;
     private AnswerEntity answerEntity;
 
     public static QuestionDto fromQuestion(Question question) {
         QuestionDto questionDto = new QuestionDto();
         questionDto.setId(question.getId());
-        questionDto.author = question.getAuthor();
-        questionDto.recipient = question.getRecipient();
+        questionDto.author = UserDto.fromUser(question.getAuthor());
+        questionDto.recipient = UserDto.fromUser(question.getRecipient());
         questionDto.question = question.getQuestion();
         questionDto.answerEntity = question.getAnswerEntity();
         return questionDto;
@@ -34,8 +34,8 @@ public class QuestionDto {
     public Question toQuestion() {
         Question result = new Question();
         result.setId(id);
-        result.setAuthor(author);
-        result.setRecipient(recipient);
+        result.setAuthor(author.toUser());
+        result.setRecipient(recipient.toUser());
         result.setQuestion(question);
         result.setAnswerEntity(answerEntity);
         return result;

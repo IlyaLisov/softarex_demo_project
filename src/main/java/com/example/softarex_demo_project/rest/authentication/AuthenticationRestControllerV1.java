@@ -40,14 +40,6 @@ public class AuthenticationRestControllerV1 {
     @Autowired
     private UserService userService;
 
-    @GetMapping("login")
-    public ResponseEntity login() {
-        Map<Object, Object> response = new HashMap<>();
-        response.put("email", "");
-        response.put("password", "");
-        return ResponseEntity.ok(response);
-    }
-
     @PostMapping("login")
     public ResponseEntity doLogin(@RequestBody AuthenticationRequestDto requestDto) {
         Map<Object, Object> response = new HashMap<>();
@@ -64,18 +56,6 @@ public class AuthenticationRestControllerV1 {
         } catch (AuthenticationException e) {
             response.put("error", "Invalid username or password.");
         }
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("register")
-    public ResponseEntity register() {
-        Map<Object, Object> response = new HashMap<>();
-        response.put("email", "");
-        response.put("password", "");
-        response.put("confirmPassword", "");
-        response.put("firstName", "");
-        response.put("lastName", "");
-        response.put("phoneNumber", "");
         return ResponseEntity.ok(response);
     }
 
