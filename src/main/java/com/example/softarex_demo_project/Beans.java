@@ -5,6 +5,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class is a class for beans.
+ *
+ * @author Ilya Lisov
+ * @version 1.0
+ */
 @Component
 public class Beans {
     @Bean
