@@ -33,17 +33,17 @@ public class UserRestControllerV1 implements UserRestUrls {
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = idUrl)
+    @GetMapping(idUrl)
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
         return new ResponseEntity<>(userService.getById(id).get(), HttpStatus.OK);
     }
 
-    @GetMapping(value = editUrl)
+    @GetMapping(editUrl)
     public ResponseEntity<UserDto> editUserById(@PathVariable(name = "id") Long id) {
         return getUserById(id);
     }
 
-    @PutMapping(value = editUrl)
+    @PutMapping(editUrl)
     public ResponseEntity doEditUserById(@PathVariable(name = "id") Long id, @RequestBody @Valid EditUserDto editUserDto) {
         Map<Object, Object> response = new HashMap<>();
         editUserDto.setId(id);

@@ -44,7 +44,7 @@ public class Question extends BaseEntity {
     @NonNull
     private String question;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
+    @OneToOne(cascade = CascadeType.ALL)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @NonNull
     private AnswerEntity answerEntity;

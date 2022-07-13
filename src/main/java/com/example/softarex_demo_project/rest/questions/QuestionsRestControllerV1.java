@@ -53,9 +53,15 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
         return questionService.getAll();
     }
 
-    @GetMapping(value = idUrl)
+    @GetMapping(idUrl)
     public ResponseEntity<QuestionDto> getQuestionById(@PathVariable(name = "id") Long id) {
         return new ResponseEntity<>(questionService.getById(id).get(), HttpStatus.OK);
+    }
+
+    @PutMapping(editUrl)
+    public ResponseEntity<QuestionDto> editQuestion(@PathVariable Long id, @RequestBody @Valid CreateQuestionDto createQuestionDto) {
+        createQuestionDto.setId(id);
+        return ResponseEntity.ok(questionService.update(createQuestionDto));
     }
 
     @GetMapping(createUrl)

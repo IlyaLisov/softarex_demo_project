@@ -23,7 +23,7 @@ public interface QuestionService {
 
     QuestionDto save(CreateQuestionDto question);
 
-    QuestionDto update(QuestionDto question) throws QuestionNotFoundException;
+    QuestionDto update(CreateQuestionDto question) throws QuestionNotFoundException;
 
     QuestionDto answerQuestion(AnswerQuestionDto answerQuestionDto) throws QuestionNotFoundException;
 
