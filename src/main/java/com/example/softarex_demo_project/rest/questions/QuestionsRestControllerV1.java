@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,9 +53,15 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
         return questionService.getAll();
     }
 
-    @GetMapping(value = idUrl)
+    @GetMapping(idUrl)
     public ResponseEntity<QuestionDto> getQuestionById(@PathVariable(name = "id") Long id) {
         return new ResponseEntity<>(questionService.getById(id).get(), HttpStatus.OK);
+    }
+
+    @PutMapping(editUrl)
+    public ResponseEntity<QuestionDto> editQuestion(@PathVariable Long id, @RequestBody @Valid CreateQuestionDto createQuestionDto) {
+        createQuestionDto.setId(id);
+        return ResponseEntity.ok(questionService.update(createQuestionDto));
     }
 
     @GetMapping(createUrl)

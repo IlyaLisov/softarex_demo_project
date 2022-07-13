@@ -12,4 +12,5 @@ public interface QuestionsRestUrls {
     String createUrl = "create";
     String userQuestionsUrl = "user/{id}";
     String answerUrl = "answer/{id}";
+    String editUrl = "{id}/edit";
 }

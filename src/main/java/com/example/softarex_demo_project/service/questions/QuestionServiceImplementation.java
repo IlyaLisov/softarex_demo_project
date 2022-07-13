@@ -13,6 +13,7 @@ import com.example.softarex_demo_project.model.question.MultiLineAnswerEntity;
 import com.example.softarex_demo_project.model.question.Question;
 import com.example.softarex_demo_project.model.question.RadioButtonAnswerEntity;
 import com.example.softarex_demo_project.model.question.SingleLineAnswerEntity;
+import com.example.softarex_demo_project.repository.AnswerRepository;
 import com.example.softarex_demo_project.repository.QuestionRepository;
 import com.example.softarex_demo_project.service.users.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -35,6 +36,9 @@ import java.util.stream.Collectors;
 public class QuestionServiceImplementation implements QuestionService {
     @Autowired
     private QuestionRepository questionRepository;
+
+    @Autowired
+    private AnswerRepository answerRepository;
 
     @Autowired
     private UserService userService;
@@ -119,13 +123,14 @@ public class QuestionServiceImplementation implements QuestionService {
     }
 
     @Override
-    public QuestionDto update(QuestionDto question) throws QuestionNotFoundException {
+    public QuestionDto update(CreateQuestionDto question) throws QuestionNotFoundException {
         Optional<Question> questionFromDatabase = questionRepository.findById(question.getId());
         if (questionFromDatabase.isPresent()) {
-            questionFromDatabase.get().setAuthor(question.getAuthor().toUser());
-            questionFromDatabase.get().setRecipient(question.getRecipient().toUser());
+            AnswerEntity answerEntity = questionFromDatabase.get().getAnswerEntity();
+            answerRepository.delete(answerEntity);
+            questionFromDatabase.get().setAnswerEntity(resolveAnswerEntity(question));
+            questionFromDatabase.get().setRecipient(userService.getByUsername(question.getRecipientEmail()).get().toUser());
             questionFromDatabase.get().setQuestion(question.getQuestion());
-            questionFromDatabase.get().setAnswerEntity(question.getAnswerEntity());
             questionFromDatabase.get().setUpdated(new Date());
             questionRepository.save(questionFromDatabase.get());
             log.info("IN QuestionService.update - Question {} was updated.", question);
