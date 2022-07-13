@@ -1,6 +1,9 @@
 package com.example.softarex_demo_project.service.users;
 
+import com.example.softarex_demo_project.dto.RegisterUserDto;
+import com.example.softarex_demo_project.dto.UserDto;
 import com.example.softarex_demo_project.model.Status;
+import com.example.softarex_demo_project.model.exceptions.user.UserAlreadyExistsException;
 import com.example.softarex_demo_project.model.user.Role;
 import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.repository.RoleRepository;
@@ -34,24 +37,25 @@ public class UserServiceImplementation implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public boolean register(User user) {
-        User userFromDatabase = userRepository.findByUsername(user.getUsername());
-        if(userFromDatabase == null) {
+    public UserDto register(RegisterUserDto registerUserDto) throws UserAlreadyExistsException {
+        registerUserDto.setUsername(registerUserDto.getEmail());
+        User userFromDatabase = userRepository.findByUsername(registerUserDto.getUsername());
+        if (userFromDatabase == null) {
             Role roleUser = roleRepository.findByName("ROLE_USER");
             List<Role> userRoles = new ArrayList<>();
             userRoles.add(roleUser);
-
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            User user = registerUserDto.toUser();
+            user.setPassword(passwordEncoder.encode(registerUserDto.getPassword()));
             user.setRoles(userRoles);
             user.setStatus(Status.ACTIVE);
             user.setCreated(new Date());
             user.setUpdated(new Date());
             userRepository.save(user);
-            log.info("IN register - User {} was registered.", user);
-            return true;
+            log.info("IN register - User {} was registered.", registerUserDto);
+            return UserDto.fromUser(userRepository.findByUsername(registerUserDto.getUsername()));
         } else {
-            log.warn("IN UserService.register - User {} was not registered - username already exists.", user);
-            return false;
+            log.warn("IN UserService.register - User {} was not registered - username already exists.", registerUserDto);
+            throw new UserAlreadyExistsException("User with email " + registerUserDto.getEmail() + " already exists.");
         }
     }
 

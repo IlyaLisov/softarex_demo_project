@@ -31,7 +31,6 @@ import java.util.Objects;
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NonNull
     protected Long id;
 
     @CreatedDate

@@ -6,14 +6,19 @@ import com.example.softarex_demo_project.service.questions.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.example.softarex_demo_project.rest.questions.QuestionsRestUrls.baseUrl;
 
 /**
  * This class is a controller for questions.
@@ -22,8 +27,8 @@ import java.util.stream.Collectors;
  * @version 1.0
  */
 @RestController
-@RequestMapping(value = "/api/v1/questions/")
-public class QuestionsRestControllerV1 {
+@RequestMapping(value = baseUrl)
+public class QuestionsRestControllerV1 implements QuestionsRestUrls {
     @Autowired
     private QuestionService questionService;
 
@@ -35,7 +40,7 @@ public class QuestionsRestControllerV1 {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping(value = "{id}")
+    @GetMapping(value = idUrl)
     private ResponseEntity<QuestionDto> getQuestionById(@PathVariable(name = "id") Long id) {
         Optional<Question> question = questionService.getById(id);
         if (!question.isPresent()) {
@@ -43,5 +48,12 @@ public class QuestionsRestControllerV1 {
         }
         QuestionDto result = QuestionDto.fromQuestion(question.get());
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity handleException(Exception e) {
+        Map<String, String> result = new HashMap<>();
+        result.put("error", e.getMessage());
+        return new ResponseEntity(result, HttpStatus.OK);
     }
 }

@@ -1,5 +1,8 @@
 package com.example.softarex_demo_project.service.users;
 
+import com.example.softarex_demo_project.dto.RegisterUserDto;
+import com.example.softarex_demo_project.dto.UserDto;
+import com.example.softarex_demo_project.model.exceptions.user.UserAlreadyExistsException;
 import com.example.softarex_demo_project.model.user.User;
 
 import java.util.List;
@@ -12,7 +15,7 @@ import java.util.Optional;
  * @version 1.0
  */
 public interface UserService {
-    boolean register(User user);
+    UserDto register(RegisterUserDto user) throws UserAlreadyExistsException;
 
     List<User> getAll();
 

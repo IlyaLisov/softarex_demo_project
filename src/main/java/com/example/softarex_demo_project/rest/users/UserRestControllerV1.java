@@ -19,6 +19,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static com.example.softarex_demo_project.rest.users.UserRestUrls.baseUrl;
+
 /**
  * This class is a controller for users.
  *
@@ -26,15 +28,15 @@ import java.util.Optional;
  * @version 1.0
  */
 @RestController
-@RequestMapping(value = "/api/v1/users/")
-public class UserRestControllerV1 {
+@RequestMapping(value = baseUrl)
+public class UserRestControllerV1 implements UserRestUrls {
     @Autowired
     private UserService userService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @GetMapping(value = "{id}")
+    @GetMapping(value = idUrl)
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
         Optional<User> user = userService.getById(id);
         if (!user.isPresent()) {
@@ -44,12 +46,12 @@ public class UserRestControllerV1 {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @GetMapping(value = "{id}/edit")
+    @GetMapping(value = editUrl)
     public ResponseEntity<UserDto> editUserById(@PathVariable(name = "id") Long id) {
         return getUserById(id);
     }
 
-    @PutMapping(value = "{id}/edit")
+    @PutMapping(value = editUrl)
     public ResponseEntity<Object> doEditUserById(@PathVariable(name = "id") Long id, HttpServletRequest request) {
         Optional<User> user = userService.getById(id);
         if (!user.isPresent()) {
@@ -91,7 +93,7 @@ public class UserRestControllerV1 {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("{id}/delete")
+    @DeleteMapping(deleteUrl)
     public ResponseEntity doDelete(@PathVariable(name = "id") Long id) {
         Map<Object, Object> response = new HashMap<>();
         Optional<User> user = userService.getById(id);

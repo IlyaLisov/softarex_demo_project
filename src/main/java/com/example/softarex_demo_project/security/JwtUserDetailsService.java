@@ -1,5 +1,6 @@
 package com.example.softarex_demo_project.security;
 
+import com.example.softarex_demo_project.model.exceptions.user.UserNotFoundException;
 import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.security.jwt.JwtUserFactory;
 import com.example.softarex_demo_project.service.users.UserService;
@@ -26,7 +27,7 @@ public class JwtUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> user = userService.getByUsername(username);
         if (!user.isPresent()) {
-            throw new UsernameNotFoundException("User with username: " + username + " not found");
+            throw new UserNotFoundException("User with username: " + username + " not found");
         }
         return JwtUserFactory.create(user.get());
     }
