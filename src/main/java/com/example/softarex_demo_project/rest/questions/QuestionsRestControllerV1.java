@@ -1,5 +1,6 @@
 package com.example.softarex_demo_project.rest.questions;
 
+import com.example.softarex_demo_project.dto.question.AnswerQuestionDto;
 import com.example.softarex_demo_project.dto.question.CreateQuestionDto;
 import com.example.softarex_demo_project.dto.question.QuestionDto;
 import com.example.softarex_demo_project.dto.user.UserDto;
@@ -51,12 +52,12 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
     }
 
     @GetMapping(value = idUrl)
-    private ResponseEntity<QuestionDto> getQuestionById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<QuestionDto> getQuestionById(@PathVariable(name = "id") Long id) {
         return new ResponseEntity<>(questionService.getById(id).get(), HttpStatus.OK);
     }
 
     @GetMapping(createUrl)
-    private ResponseEntity createQuestion() {
+    public ResponseEntity createQuestion() {
         Map<String, Object> result = new HashMap<>();
         result.put("answerTypes", AnswerType.values());
         result.put("userEmails", userService.getAll().stream()
@@ -66,15 +67,21 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
     }
 
     @PostMapping(createUrl)
-    private ResponseEntity<QuestionDto> doCreateQuestion(@RequestBody @Valid CreateQuestionDto questionDto, HttpServletRequest request) {
+    public ResponseEntity<QuestionDto> doCreateQuestion(@RequestBody @Valid CreateQuestionDto questionDto, HttpServletRequest request) {
         String authorUsername = jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(request));
         questionDto.setAuthorEmail(authorUsername);
         return ResponseEntity.ok(questionService.save(questionDto));
     }
 
     @GetMapping(userQuestionsUrl)
-    private List<QuestionDto> userQuestions(@PathVariable Long id) {
+    public List<QuestionDto> userQuestions(@PathVariable Long id) {
         return questionService.getAllByRecipientId(id);
+    }
+
+    @PostMapping(answerUrl)
+    public ResponseEntity<QuestionDto> answerQuestion(@PathVariable Long id, @RequestBody @Valid AnswerQuestionDto answerQuestionDto) {
+        answerQuestionDto.setQuestionId(id);
+        return ResponseEntity.ok(questionService.answerQuestion(answerQuestionDto));
     }
 
     @ExceptionHandler

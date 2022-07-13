@@ -7,7 +7,7 @@ import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -22,19 +22,19 @@ import java.util.Objects;
 @ToString
 public class DateAnswerEntity extends AnswerEntity {
     @Column(name = "date_answer")
-    private LocalDate answer;
+    private Date answer;
 
     public DateAnswerEntity() {
         this.answerType = AnswerType.DATE;
     }
 
-    public DateAnswerEntity(LocalDate answer) {
+    public DateAnswerEntity(Date answer) {
         this.answer = answer;
         this.answerType = AnswerType.DATE;
     }
 
     @Override
-    public LocalDate getAnswer() {
+    public Date getAnswer() {
         return answer;
     }
 

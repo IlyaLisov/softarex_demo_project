@@ -1,5 +1,6 @@
 package com.example.softarex_demo_project.service.questions;
 
+import com.example.softarex_demo_project.dto.question.AnswerQuestionDto;
 import com.example.softarex_demo_project.dto.question.CreateQuestionDto;
 import com.example.softarex_demo_project.dto.question.QuestionDto;
 import com.example.softarex_demo_project.model.exceptions.question.QuestionNotFoundException;
@@ -23,6 +24,8 @@ public interface QuestionService {
     QuestionDto save(CreateQuestionDto question);
 
     QuestionDto update(QuestionDto question) throws QuestionNotFoundException;
+
+    QuestionDto answerQuestion(AnswerQuestionDto answerQuestionDto) throws QuestionNotFoundException;
 
     void delete(Long id) throws QuestionNotFoundException;
 }

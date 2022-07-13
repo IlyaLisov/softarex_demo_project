@@ -27,15 +27,21 @@ public class CheckboxAnswerEntity extends AnswerEntity {
     private List<String> options;
 
     @Column(name = "checkbox_answer")
-    private Boolean answer;
+    @ElementCollection
+    private List<String> answer;
 
     public CheckboxAnswerEntity() {
         this.answerType = AnswerType.CHECKBOX;
     }
 
-    public CheckboxAnswerEntity(Boolean answer) {
-        this.answer = answer;
+    public CheckboxAnswerEntity(List<String> options) {
+        this.options = options;
         this.answerType = AnswerType.CHECKBOX;
+    }
+
+    public CheckboxAnswerEntity(List<String> options, List<String> answer) {
+        this.options = options;
+        this.answer = answer;
     }
 
     @Override

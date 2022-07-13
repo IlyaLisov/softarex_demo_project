@@ -1,5 +1,6 @@
 package com.example.softarex_demo_project.service.questions;
 
+import com.example.softarex_demo_project.dto.question.AnswerQuestionDto;
 import com.example.softarex_demo_project.dto.question.CreateQuestionDto;
 import com.example.softarex_demo_project.dto.question.QuestionDto;
 import com.example.softarex_demo_project.model.Status;
@@ -132,6 +133,42 @@ public class QuestionServiceImplementation implements QuestionService {
         } else {
             log.warn("IN QuestionService.getById - Question {} was not updated.", question);
             throw new QuestionNotFoundException("Question " + question.getId() + " not found.");
+        }
+    }
+
+    @Override
+    public QuestionDto answerQuestion(AnswerQuestionDto answerQuestionDto) throws QuestionNotFoundException {
+        Optional<Question> question = questionRepository.findById(answerQuestionDto.getQuestionId());
+        if (question.isPresent()) {
+            AnswerEntity answerEntity = question.get().getAnswerEntity();
+            switch (answerEntity.getAnswerType()) {
+                case SINGLE_LINE_TEXT:
+                    ((SingleLineAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getStringAnswer());
+                    break;
+                case MULTILINE_TEXT:
+                    ((MultiLineAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getStringAnswer());
+                    break;
+                case COMBOBOX:
+                    ((ComboboxAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getAnswerList());
+                    break;
+                case CHECKBOX:
+                    ((CheckboxAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getAnswerList());
+                    break;
+                case RADIO_BUTTON:
+                    RadioButtonAnswerEntity radioButtonAnswerEntity = (RadioButtonAnswerEntity) answerEntity;
+                    radioButtonAnswerEntity.setAnswer(radioButtonAnswerEntity.getOptions().get(answerQuestionDto.getOptionIndex()));
+                    break;
+                case DATE:
+                    ((DateAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getDate());
+                    break;
+            }
+            question.get().setAnswerEntity(answerEntity);
+            questionRepository.save(question.get());
+            log.info("IN QuestionService.answerQuestion - Question {} was answered.", question);
+            return QuestionDto.fromQuestion(question.get());
+        } else {
+            log.warn("IN QuestionService.answerQuestion - Question {} was answered.", question);
+            throw new QuestionNotFoundException("Question " + answerQuestionDto.getQuestionId() + " not found.");
         }
     }
 
