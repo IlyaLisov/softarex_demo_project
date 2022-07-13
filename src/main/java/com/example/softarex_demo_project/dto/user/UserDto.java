@@ -1,4 +1,4 @@
-package com.example.softarex_demo_project.dto;
+package com.example.softarex_demo_project.dto.user;
 
 import com.example.softarex_demo_project.model.user.Role;
 import com.example.softarex_demo_project.model.user.User;

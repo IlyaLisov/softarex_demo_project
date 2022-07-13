@@ -2,8 +2,8 @@ package com.example.softarex_demo_project.rest.authentication;
 
 import com.example.softarex_demo_project.dto.AuthenticationDto;
 import com.example.softarex_demo_project.dto.AuthenticationRequestDto;
-import com.example.softarex_demo_project.dto.RegisterUserDto;
-import com.example.softarex_demo_project.dto.UserDto;
+import com.example.softarex_demo_project.dto.user.RegisterUserDto;
+import com.example.softarex_demo_project.dto.user.UserDto;
 import com.example.softarex_demo_project.model.exceptions.user.DataNotValidException;
 import com.example.softarex_demo_project.security.jwt.JwtTokenProvider;
 import com.example.softarex_demo_project.service.users.UserService;

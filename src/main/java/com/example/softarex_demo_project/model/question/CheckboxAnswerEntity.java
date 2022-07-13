@@ -6,7 +6,9 @@ import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -20,6 +22,10 @@ import java.util.Objects;
 @Setter
 @ToString
 public class CheckboxAnswerEntity extends AnswerEntity {
+    @Column(name = "checkbox_options")
+    @ElementCollection
+    private List<String> options;
+
     @Column(name = "checkbox_answer")
     private Boolean answer;
 

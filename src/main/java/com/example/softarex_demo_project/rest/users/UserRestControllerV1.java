@@ -1,7 +1,7 @@
 package com.example.softarex_demo_project.rest.users;
 
-import com.example.softarex_demo_project.dto.EditUserDto;
-import com.example.softarex_demo_project.dto.UserDto;
+import com.example.softarex_demo_project.dto.user.EditUserDto;
+import com.example.softarex_demo_project.dto.user.UserDto;
 import com.example.softarex_demo_project.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

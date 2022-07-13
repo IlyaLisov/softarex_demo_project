@@ -1,8 +1,8 @@
 package com.example.softarex_demo_project.service.users;
 
-import com.example.softarex_demo_project.dto.EditUserDto;
-import com.example.softarex_demo_project.dto.RegisterUserDto;
-import com.example.softarex_demo_project.dto.UserDto;
+import com.example.softarex_demo_project.dto.user.EditUserDto;
+import com.example.softarex_demo_project.dto.user.RegisterUserDto;
+import com.example.softarex_demo_project.dto.user.UserDto;
 import com.example.softarex_demo_project.model.exceptions.user.DataNotValidException;
 import com.example.softarex_demo_project.model.exceptions.user.UserAlreadyExistsException;
 import com.example.softarex_demo_project.model.exceptions.user.UserNotFoundException;

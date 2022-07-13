@@ -1,11 +1,13 @@
-package com.example.softarex_demo_project.dto;
+package com.example.softarex_demo_project.dto.question;
 
+import com.example.softarex_demo_project.dto.user.UserDto;
 import com.example.softarex_demo_project.model.question.AnswerEntity;
 import com.example.softarex_demo_project.model.question.Question;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 /**
  * This class is a DTO of Question class.
@@ -24,7 +26,9 @@ public class QuestionDto {
     @Valid
     private UserDto recipient;
 
+    @NotEmpty(message = "Question can`t be empty.")
     private String question;
+
     private AnswerEntity answerEntity;
 
     public static QuestionDto fromQuestion(Question question) {

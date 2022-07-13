@@ -1,6 +1,7 @@
 package com.example.softarex_demo_project.service.questions;
 
-import com.example.softarex_demo_project.dto.QuestionDto;
+import com.example.softarex_demo_project.dto.question.CreateQuestionDto;
+import com.example.softarex_demo_project.dto.question.QuestionDto;
 import com.example.softarex_demo_project.model.exceptions.question.QuestionNotFoundException;
 
 import java.util.List;
@@ -15,9 +16,11 @@ import java.util.Optional;
 public interface QuestionService {
     List<QuestionDto> getAll();
 
+    List<QuestionDto> getAllByRecipientId(Long id);
+
     Optional<QuestionDto> getById(Long id) throws QuestionNotFoundException;
 
-    void save(QuestionDto question);
+    QuestionDto save(CreateQuestionDto question);
 
     QuestionDto update(QuestionDto question) throws QuestionNotFoundException;
 

@@ -1,6 +1,6 @@
 package com.example.softarex_demo_project.security;
 
-import com.example.softarex_demo_project.dto.UserDto;
+import com.example.softarex_demo_project.dto.user.UserDto;
 import com.example.softarex_demo_project.security.jwt.JwtUserFactory;
 import com.example.softarex_demo_project.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

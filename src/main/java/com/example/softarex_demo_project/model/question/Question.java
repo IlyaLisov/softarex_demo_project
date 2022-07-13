@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
@@ -39,7 +40,7 @@ public class Question extends BaseEntity {
     @NonNull
     private String question;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @NonNull
     private AnswerEntity answerEntity;
 
