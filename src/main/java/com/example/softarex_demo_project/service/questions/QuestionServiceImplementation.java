@@ -178,6 +178,7 @@ public class QuestionServiceImplementation implements QuestionService {
             log.info("IN QuestionService.delete - Question with id {} was deleted.", id);
             questionRepository.deleteById(id);
         } else {
+            log.warn("IN QuestionService.delete - Question with id {} was not found.", id);
             throw new QuestionNotFoundException("Question " + id + " not found.");
         }
     }

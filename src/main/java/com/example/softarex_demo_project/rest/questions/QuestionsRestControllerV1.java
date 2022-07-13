@@ -11,6 +11,7 @@ import com.example.softarex_demo_project.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -82,6 +83,14 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
     public ResponseEntity<QuestionDto> answerQuestion(@PathVariable Long id, @RequestBody @Valid AnswerQuestionDto answerQuestionDto) {
         answerQuestionDto.setQuestionId(id);
         return ResponseEntity.ok(questionService.answerQuestion(answerQuestionDto));
+    }
+
+    @DeleteMapping(idUrl)
+    public ResponseEntity deleteQuestion(@PathVariable Long id) {
+        Map<Object, Object> response = new HashMap<>();
+        questionService.delete(id);
+        response.put("message", "Question was successfully deleted.");
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ExceptionHandler

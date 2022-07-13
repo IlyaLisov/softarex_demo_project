@@ -10,5 +10,4 @@ public interface UserRestUrls {
     String baseUrl = "/api/v1/users/";
     String idUrl = "{id}";
     String editUrl = "{id}/edit";
-    String deleteUrl = "{id}/delete";
 }

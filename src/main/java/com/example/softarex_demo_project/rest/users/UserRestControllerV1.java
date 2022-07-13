@@ -52,7 +52,7 @@ public class UserRestControllerV1 implements UserRestUrls {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping(deleteUrl)
+    @DeleteMapping(idUrl)
     public ResponseEntity doDelete(@PathVariable(name = "id") Long id) {
         Map<Object, Object> response = new HashMap<>();
         userService.delete(id);
