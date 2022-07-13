@@ -1,8 +1,11 @@
 package com.example.softarex_demo_project.service.users;
 
+import com.example.softarex_demo_project.dto.EditUserDto;
 import com.example.softarex_demo_project.dto.RegisterUserDto;
 import com.example.softarex_demo_project.dto.UserDto;
+import com.example.softarex_demo_project.model.exceptions.user.DataNotValidException;
 import com.example.softarex_demo_project.model.exceptions.user.UserAlreadyExistsException;
+import com.example.softarex_demo_project.model.exceptions.user.UserNotFoundException;
 import com.example.softarex_demo_project.model.user.User;
 
 import java.util.List;
@@ -17,13 +20,13 @@ import java.util.Optional;
 public interface UserService {
     UserDto register(RegisterUserDto user) throws UserAlreadyExistsException;
 
-    List<User> getAll();
+    List<UserDto> getAll();
 
     Optional<User> getByUsername(String username);
 
-    Optional<User> getById(Long id);
+    Optional<UserDto> getById(Long id) throws UserNotFoundException;
 
-    boolean update(User user);
+    UserDto update(EditUserDto user) throws UserNotFoundException, DataNotValidException, UserAlreadyExistsException;
 
-    void delete(Long id);
+    void delete(Long id) throws UserNotFoundException;
 }

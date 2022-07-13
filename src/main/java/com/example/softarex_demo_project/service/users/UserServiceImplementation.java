@@ -1,9 +1,12 @@
 package com.example.softarex_demo_project.service.users;
 
+import com.example.softarex_demo_project.dto.EditUserDto;
 import com.example.softarex_demo_project.dto.RegisterUserDto;
 import com.example.softarex_demo_project.dto.UserDto;
 import com.example.softarex_demo_project.model.Status;
+import com.example.softarex_demo_project.model.exceptions.user.DataNotValidException;
 import com.example.softarex_demo_project.model.exceptions.user.UserAlreadyExistsException;
+import com.example.softarex_demo_project.model.exceptions.user.UserNotFoundException;
 import com.example.softarex_demo_project.model.user.Role;
 import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.repository.RoleRepository;
@@ -17,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * This class is an implementation of UserService.
@@ -60,12 +64,15 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<UserDto> getAll() {
         List<User> users = userRepository.findAll();
         log.info("IN UserService.getAll - {} users were found.", users.size());
-        return users;
+        return users.stream()
+                .map(UserDto::fromUser)
+                .collect(Collectors.toList());
     }
 
+    @Override
     public Optional<User> getByUsername(String username) {
         User user = userRepository.findByUsername(username);
         if (user == null) {
@@ -76,40 +83,53 @@ public class UserServiceImplementation implements UserService {
         return Optional.ofNullable(user);
     }
 
-    public Optional<User> getById(Long id) {
+    @Override
+    public Optional<UserDto> getById(Long id) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             log.info("IN UserService.getById - User {} was found.", user.get());
+            return Optional.of(UserDto.fromUser(user.get()));
         } else {
             log.warn("IN UserService.getById - User with id {} was not found.", id);
+            throw new UserNotFoundException("User " + id + " not found.");
         }
-        return user;
-    }
-
-    public boolean update(User user) {
-        Optional<User> userFromDatabase = userRepository.findById(user.getId());
-        if (userFromDatabase.isPresent()) {
-            userFromDatabase.get().setFirstName(user.getFirstName());
-            userFromDatabase.get().setLastName(user.getLastName());
-            userFromDatabase.get().setEmail(user.getEmail());
-            userFromDatabase.get().setUsername(user.getEmail());
-            userFromDatabase.get().setPhoneNumber(user.getPhoneNumber());
-            //if password hasn`t changed OR CHANGED TO ITS HASH then it must be encoded
-            if (!user.getPassword().equals(userFromDatabase.get().getPassword())) {
-                userFromDatabase.get().setPassword(passwordEncoder.encode(user.getPassword()));
-            }
-            userFromDatabase.get().setUpdated(new Date());
-            userRepository.save(userFromDatabase.get());
-            log.info("IN UserService.update - User {} was updated.", user);
-            return true;
-        }
-        log.info("IN UserService.update - User {} was not updated.", user);
-        return false;
     }
 
     @Override
-    public void delete(Long id) {
-        log.info("IN UserService.delete - User with id {} was deleted.", id);
-        userRepository.deleteById(id);
+    public UserDto update(EditUserDto editUserDto) throws UserNotFoundException, DataNotValidException, UserAlreadyExistsException {
+        Optional<User> userFromDatabase = userRepository.findById(editUserDto.getId());
+        if (userFromDatabase.isPresent()) {
+            if (!passwordEncoder.matches(editUserDto.getPassword(), userFromDatabase.get().getPassword())) {
+                throw new DataNotValidException("Current password is incorrect.");
+            }
+            if (!editUserDto.getEmail().equals(userFromDatabase.get().getEmail()) && getByUsername(editUserDto.getEmail()).isPresent()) {
+                throw new UserAlreadyExistsException("User with such email already exists.");
+            }
+            userFromDatabase.get().setFirstName(editUserDto.getFirstName());
+            userFromDatabase.get().setLastName(editUserDto.getLastName());
+            userFromDatabase.get().setEmail(editUserDto.getEmail());
+            userFromDatabase.get().setUsername(editUserDto.getEmail());
+            userFromDatabase.get().setPhoneNumber(editUserDto.getPhoneNumber());
+            if (editUserDto.getNewPassword() != null && !editUserDto.getNewPassword().isEmpty()) {
+                userFromDatabase.get().setPassword(passwordEncoder.encode(editUserDto.getNewPassword()));
+            }
+            userFromDatabase.get().setUpdated(new Date());
+            userRepository.save(userFromDatabase.get());
+            log.info("IN UserService.update - User {} was updated.", editUserDto);
+            return UserDto.fromUser(userFromDatabase.get());
+        } else {
+            log.warn("IN UserService.update - User {} was not updated.", editUserDto);
+            throw new UserAlreadyExistsException("User with email " + editUserDto.getEmail() + " already exists.");
+        }
+    }
+
+    @Override
+    public void delete(Long id) throws UserNotFoundException {
+        if (userRepository.findById(id).isPresent()) {
+            log.info("IN UserService.delete - User with id {} was deleted.", id);
+            userRepository.deleteById(id);
+        } else {
+            throw new UserNotFoundException("User " + id + " not found.");
+        }
     }
 }

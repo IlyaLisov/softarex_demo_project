@@ -2,9 +2,10 @@ package com.example.softarex_demo_project.dto;
 
 import com.example.softarex_demo_project.model.question.AnswerEntity;
 import com.example.softarex_demo_project.model.question.Question;
-import com.example.softarex_demo_project.model.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
+
+import javax.validation.Valid;
 
 /**
  * This class is a DTO of Question class.
@@ -16,8 +17,13 @@ import lombok.Data;
 @Data
 public class QuestionDto {
     private Long id;
+
+    @Valid
     private UserDto author;
+
+    @Valid
     private UserDto recipient;
+
     private String question;
     private AnswerEntity answerEntity;
 
