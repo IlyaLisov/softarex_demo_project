@@ -1,7 +1,6 @@
 package com.example.softarex_demo_project.security;
 
-import com.example.softarex_demo_project.model.exceptions.user.UserNotFoundException;
-import com.example.softarex_demo_project.model.user.User;
+import com.example.softarex_demo_project.dto.UserDto;
 import com.example.softarex_demo_project.security.jwt.JwtUserFactory;
 import com.example.softarex_demo_project.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +24,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userService.getByUsername(username);
-        if (!user.isPresent()) {
-            throw new UserNotFoundException("User with username: " + username + " not found");
-        }
-        return JwtUserFactory.create(user.get());
+        Optional<UserDto> user = userService.getByUsername(username);
+        return JwtUserFactory.create(user.get().toUser());
     }
 }

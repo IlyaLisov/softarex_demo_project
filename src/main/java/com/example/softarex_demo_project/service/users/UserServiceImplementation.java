@@ -73,14 +73,15 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public Optional<User> getByUsername(String username) {
+    public Optional<UserDto> getByUsername(String username) throws UserNotFoundException {
         User user = userRepository.findByUsername(username);
         if (user == null) {
             log.warn("IN UserService.getByUsername - User {} was not found.", username);
+            throw new UserNotFoundException("User " + username + " not found.");
         } else {
             log.info("IN UserService.getByUsername - User {} was found.", username);
+            return Optional.of(UserDto.fromUser(user));
         }
-        return Optional.ofNullable(user);
     }
 
     @Override

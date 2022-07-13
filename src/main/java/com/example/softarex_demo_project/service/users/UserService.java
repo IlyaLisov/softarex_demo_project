@@ -6,7 +6,6 @@ import com.example.softarex_demo_project.dto.UserDto;
 import com.example.softarex_demo_project.model.exceptions.user.DataNotValidException;
 import com.example.softarex_demo_project.model.exceptions.user.UserAlreadyExistsException;
 import com.example.softarex_demo_project.model.exceptions.user.UserNotFoundException;
-import com.example.softarex_demo_project.model.user.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +21,7 @@ public interface UserService {
 
     List<UserDto> getAll();
 
-    Optional<User> getByUsername(String username);
+    Optional<UserDto> getByUsername(String username) throws UserNotFoundException;
 
     Optional<UserDto> getById(Long id) throws UserNotFoundException;
 

@@ -5,7 +5,6 @@ import com.example.softarex_demo_project.dto.AuthenticationRequestDto;
 import com.example.softarex_demo_project.dto.RegisterUserDto;
 import com.example.softarex_demo_project.dto.UserDto;
 import com.example.softarex_demo_project.model.exceptions.user.DataNotValidException;
-import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.security.jwt.JwtTokenProvider;
 import com.example.softarex_demo_project.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +49,7 @@ public class AuthenticationRestControllerV1 implements AuthenticationRestUrls {
         AuthenticationDto authenticationDto = new AuthenticationDto();
         String username = requestDto.getUsername();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-        Optional<User> user = userService.getByUsername(username);
+        Optional<UserDto> user = userService.getByUsername(username);
         authenticationDto.setUsername(username);
         authenticationDto.setToken(jwtTokenProvider.createToken(username, user.get().getRoles()));
         return ResponseEntity.ok(authenticationDto);

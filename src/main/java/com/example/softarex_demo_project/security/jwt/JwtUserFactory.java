@@ -1,6 +1,5 @@
 package com.example.softarex_demo_project.security.jwt;
 
-import com.example.softarex_demo_project.model.Status;
 import com.example.softarex_demo_project.model.user.Role;
 import com.example.softarex_demo_project.model.user.User;
 import org.springframework.security.core.GrantedAuthority;
@@ -30,7 +29,7 @@ public final class JwtUserFactory {
                 user.getPassword(),
                 user.getPhoneNumber(),
                 mapToGrantedAuthorities(new ArrayList<>(user.getRoles())),
-                user.getStatus().equals(Status.ACTIVE),
+                true,
                 user.getUpdated()
         );
     }
