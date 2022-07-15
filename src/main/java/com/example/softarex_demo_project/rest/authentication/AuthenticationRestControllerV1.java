@@ -24,7 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.baseUrl;
+import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.BASE_URL;
 
 /**
  * This class is a controller for authentication of users.
@@ -33,7 +33,7 @@ import static com.example.softarex_demo_project.rest.authentication.Authenticati
  * @version 1.0
  */
 @RestController
-@RequestMapping(value = baseUrl)
+@RequestMapping(value = BASE_URL)
 public class AuthenticationRestControllerV1 implements AuthenticationRestUrls {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -44,7 +44,7 @@ public class AuthenticationRestControllerV1 implements AuthenticationRestUrls {
     @Autowired
     private UserService userService;
 
-    @PostMapping(loginUlr)
+    @PostMapping(LOGIN_ULR)
     public ResponseEntity<AuthenticationDto> doLogin(@RequestBody @Valid AuthenticationRequestDto requestDto) {
         AuthenticationDto authenticationDto = new AuthenticationDto();
         String username = requestDto.getUsername();
@@ -55,7 +55,7 @@ public class AuthenticationRestControllerV1 implements AuthenticationRestUrls {
         return ResponseEntity.ok(authenticationDto);
     }
 
-    @PostMapping(registerUrl)
+    @PostMapping(REGISTER_URL)
     public ResponseEntity<UserDto> doRegister(@RequestBody @Valid RegisterUserDto registerUserDto) throws DataNotValidException {
         if (!Objects.equals(registerUserDto.getPassword(), registerUserDto.getPasswordConfirmation())) {
             throw new DataNotValidException("Passwords must be the same.");

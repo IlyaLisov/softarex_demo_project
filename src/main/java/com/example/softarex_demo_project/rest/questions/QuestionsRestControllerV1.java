@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.example.softarex_demo_project.rest.questions.QuestionsRestUrls.baseUrl;
+import static com.example.softarex_demo_project.rest.questions.QuestionsRestUrls.BASE_URL;
 
 /**
  * This class is a controller for questions.
@@ -38,7 +38,7 @@ import static com.example.softarex_demo_project.rest.questions.QuestionsRestUrls
  * @version 1.0
  */
 @RestController
-@RequestMapping(value = baseUrl)
+@RequestMapping(value = BASE_URL)
 public class QuestionsRestControllerV1 implements QuestionsRestUrls {
     @Autowired
     private UserService userService;
@@ -54,18 +54,18 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
         return questionService.getAll();
     }
 
-    @GetMapping(idUrl)
+    @GetMapping(ID_URL)
     public ResponseEntity<QuestionDto> getQuestionById(@PathVariable(name = "id") UUID id) {
         return new ResponseEntity<>(questionService.getById(id).get(), HttpStatus.OK);
     }
 
-    @PutMapping(editUrl)
+    @PutMapping(EDIT_URL)
     public ResponseEntity<QuestionDto> editQuestion(@PathVariable UUID id, @RequestBody @Valid CreateQuestionDto createQuestionDto) {
         createQuestionDto.setId(id);
         return ResponseEntity.ok(questionService.update(createQuestionDto));
     }
 
-    @GetMapping(createUrl)
+    @GetMapping(CREATE_URL)
     public ResponseEntity createQuestion() {
         Map<String, Object> result = new HashMap<>();
         result.put("answerTypes", AnswerType.values());
@@ -75,31 +75,31 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping(createUrl)
+    @PostMapping(CREATE_URL)
     public ResponseEntity<QuestionDto> doCreateQuestion(@RequestBody @Valid CreateQuestionDto questionDto, HttpServletRequest request) {
         String authorUsername = jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(request));
         questionDto.setAuthorEmail(authorUsername);
         return ResponseEntity.ok(questionService.save(questionDto));
     }
 
-    @GetMapping(userQuestionsUrl)
+    @GetMapping(USER_QUESTIONS_URL)
     public List<QuestionDto> userQuestions(@PathVariable UUID id) {
         return questionService.getAllByRecipientId(id);
     }
 
-    @PostMapping(answerUrl)
+    @PostMapping(ANSWER_URL)
     public ResponseEntity<QuestionDto> answerQuestion(@PathVariable UUID id, @RequestBody @Valid AnswerQuestionDto answerQuestionDto) {
         answerQuestionDto.setQuestionId(id);
         return ResponseEntity.ok(questionService.answerQuestion(answerQuestionDto));
     }
 
-    @PutMapping(answerUrl)
+    @PutMapping(ANSWER_URL)
     public ResponseEntity<QuestionDto> editAnswerQuestion(@PathVariable UUID id, @RequestBody @Valid AnswerQuestionDto answerQuestionDto) {
         answerQuestionDto.setQuestionId(id);
         return ResponseEntity.ok(questionService.answerQuestion(answerQuestionDto));
     }
 
-    @DeleteMapping(idUrl)
+    @DeleteMapping(ID_URL)
     public ResponseEntity deleteQuestion(@PathVariable UUID id) {
         Map<Object, Object> response = new HashMap<>();
         questionService.delete(id);

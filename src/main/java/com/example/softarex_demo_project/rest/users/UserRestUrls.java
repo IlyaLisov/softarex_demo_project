@@ -7,7 +7,7 @@ package com.example.softarex_demo_project.rest.users;
  * @version 1.0
  */
 public interface UserRestUrls {
-    String baseUrl = "/api/v1/users/";
-    String idUrl = "{id}";
-    String editUrl = "{id}/edit";
+    String BASE_URL = "/api/v1/users/";
+    String ID_URL = "{id}";
+    String EDIT_URL = "{id}/edit";
 }

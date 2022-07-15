@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import static com.example.softarex_demo_project.rest.users.UserRestUrls.baseUrl;
+import static com.example.softarex_demo_project.rest.users.UserRestUrls.BASE_URL;
 
 /**
  * This class is a controller for users.
@@ -29,22 +29,22 @@ import static com.example.softarex_demo_project.rest.users.UserRestUrls.baseUrl;
  * @version 1.0
  */
 @RestController
-@RequestMapping(value = baseUrl)
+@RequestMapping(value = BASE_URL)
 public class UserRestControllerV1 implements UserRestUrls {
     @Autowired
     private UserService userService;
 
-    @GetMapping(idUrl)
+    @GetMapping(ID_URL)
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") UUID id) {
         return new ResponseEntity<>(userService.getById(id).get(), HttpStatus.OK);
     }
 
-    @GetMapping(editUrl)
+    @GetMapping(EDIT_URL)
     public ResponseEntity<UserDto> editUserById(@PathVariable(name = "id") UUID id) {
         return getUserById(id);
     }
 
-    @PutMapping(editUrl)
+    @PutMapping(EDIT_URL)
     public ResponseEntity doEditUserById(@PathVariable(name = "id") UUID id, @RequestBody @Valid EditUserDto editUserDto) {
         Map<Object, Object> response = new HashMap<>();
         editUserDto.setId(id);
@@ -53,7 +53,7 @@ public class UserRestControllerV1 implements UserRestUrls {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping(idUrl)
+    @DeleteMapping(ID_URL)
     public ResponseEntity doDelete(@PathVariable(name = "id") UUID id) {
         Map<Object, Object> response = new HashMap<>();
         userService.delete(id);

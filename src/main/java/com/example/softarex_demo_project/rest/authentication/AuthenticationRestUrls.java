@@ -7,7 +7,7 @@ package com.example.softarex_demo_project.rest.authentication;
  * @version 1.0
  */
 public interface AuthenticationRestUrls {
-    String baseUrl = "/api/v1/auth/";
-    String loginUlr = "login";
-    String registerUrl = "register";
+    String BASE_URL = "/api/v1/auth/";
+    String LOGIN_ULR = "login";
+    String REGISTER_URL = "register";
 }

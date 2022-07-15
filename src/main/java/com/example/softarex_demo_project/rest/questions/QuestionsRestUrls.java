@@ -7,10 +7,10 @@ package com.example.softarex_demo_project.rest.questions;
  * @version 1.0
  */
 public interface QuestionsRestUrls {
-    String baseUrl = "/api/v1/questions/";
-    String idUrl = "{id}";
-    String createUrl = "create";
-    String userQuestionsUrl = "user/{id}";
-    String answerUrl = "answer/{id}";
-    String editUrl = "{id}/edit";
+    String BASE_URL = "/api/v1/questions/";
+    String ID_URL = "{id}";
+    String CREATE_URL = "create";
+    String USER_QUESTIONS_URL = "user/{id}";
+    String ANSWER_URL = "answer/{id}";
+    String EDIT_URL = "{id}/edit";
 }
