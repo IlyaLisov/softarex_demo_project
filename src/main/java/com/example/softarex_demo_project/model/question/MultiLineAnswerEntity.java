@@ -20,7 +20,7 @@ import java.util.Objects;
 @Setter
 @ToString
 public class MultiLineAnswerEntity extends AnswerEntity {
-    @Column(name = "multi_line_answer")
+    @Column(name = "multiline_answer")
     private String answer;
 
     public MultiLineAnswerEntity() {

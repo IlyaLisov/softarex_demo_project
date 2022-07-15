@@ -34,7 +34,7 @@ public class UserDto {
     @Email(message = "You must input email.")
     protected String email;
 
-    @Length(min = 5, max = 16, message = "Length must be in {min} - {max}")
+    @Length(max = 16, message = "Length must be in {min} - {max}")
     protected String phoneNumber;
 
     @NotNull(message = "Password is missing.")

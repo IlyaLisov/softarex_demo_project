@@ -7,7 +7,6 @@ import com.example.softarex_demo_project.model.Status;
 import com.example.softarex_demo_project.model.exceptions.question.QuestionNotFoundException;
 import com.example.softarex_demo_project.model.question.AnswerEntity;
 import com.example.softarex_demo_project.model.question.CheckboxAnswerEntity;
-import com.example.softarex_demo_project.model.question.ComboboxAnswerEntity;
 import com.example.softarex_demo_project.model.question.DateAnswerEntity;
 import com.example.softarex_demo_project.model.question.MultiLineAnswerEntity;
 import com.example.softarex_demo_project.model.question.Question;
@@ -106,11 +105,6 @@ public class QuestionServiceImplementation implements QuestionService {
                 checkboxAnswerEntity.setOptions(questionDto.getOptions());
                 answerEntity = checkboxAnswerEntity;
                 break;
-            case COMBOBOX:
-                ComboboxAnswerEntity comboboxAnswerEntity = new ComboboxAnswerEntity();
-                comboboxAnswerEntity.setOptions(questionDto.getOptions());
-                answerEntity = comboboxAnswerEntity;
-                break;
             case DATE:
                 answerEntity = new DateAnswerEntity();
                 break;
@@ -153,9 +147,6 @@ public class QuestionServiceImplementation implements QuestionService {
                     break;
                 case MULTILINE_TEXT:
                     ((MultiLineAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getStringAnswer());
-                    break;
-                case COMBOBOX:
-                    ((ComboboxAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getAnswerList());
                     break;
                 case CHECKBOX:
                     ((CheckboxAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getAnswerList());
