@@ -82,11 +82,6 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
         return ResponseEntity.ok(questionService.save(questionDto));
     }
 
-    @GetMapping(USER_QUESTIONS_URL)
-    public List<QuestionDto> userQuestions(@PathVariable UUID id) {
-        return questionService.getAllByRecipientId(id);
-    }
-
     @PostMapping(ANSWER_URL)
     public ResponseEntity<QuestionDto> answerQuestion(@PathVariable UUID id, @RequestBody @Valid AnswerQuestionDto answerQuestionDto) {
         answerQuestionDto.setQuestionId(id);

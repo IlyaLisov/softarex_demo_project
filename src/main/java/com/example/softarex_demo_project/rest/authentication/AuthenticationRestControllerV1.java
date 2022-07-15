@@ -51,7 +51,8 @@ public class AuthenticationRestControllerV1 implements AuthenticationRestUrls {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
         Optional<UserDto> user = userService.getByUsername(username);
         authenticationDto.setUsername(username);
-        authenticationDto.setToken(jwtTokenProvider.createToken(username, user.get().getRoles()));
+        authenticationDto.setToken(jwtTokenProvider.createToken(user.get().getId(), username, user.get().getRoles()));
+        authenticationDto.setUserId(user.get().getId());
         return ResponseEntity.ok(authenticationDto);
     }
 

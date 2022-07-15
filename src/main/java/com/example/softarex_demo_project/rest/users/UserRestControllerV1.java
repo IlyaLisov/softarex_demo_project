@@ -1,7 +1,9 @@
 package com.example.softarex_demo_project.rest.users;
 
+import com.example.softarex_demo_project.dto.question.QuestionDto;
 import com.example.softarex_demo_project.dto.user.EditUserDto;
 import com.example.softarex_demo_project.dto.user.UserDto;
+import com.example.softarex_demo_project.service.questions.QuestionService;
 import com.example.softarex_demo_project.service.users.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -33,6 +36,9 @@ import static com.example.softarex_demo_project.rest.users.UserRestUrls.BASE_URL
 public class UserRestControllerV1 implements UserRestUrls {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private QuestionService questionService;
 
     @GetMapping(ID_URL)
     public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") UUID id) {
@@ -59,6 +65,16 @@ public class UserRestControllerV1 implements UserRestUrls {
         userService.delete(id);
         response.put("message", "User was successfully deleted.");
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @GetMapping(FROM_QUESTIONS_URL)
+    public List<QuestionDto> fromUserQuestions(@PathVariable UUID id) {
+        return questionService.getAllByAuthorId(id);
+    }
+
+    @GetMapping(TO_QUESTIONS_URL)
+    public List<QuestionDto> toUserQuestions(@PathVariable UUID id) {
+        return questionService.getAllByRecipientId(id);
     }
 
     @ExceptionHandler

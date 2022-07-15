@@ -65,6 +65,13 @@ public class QuestionServiceImplementation implements QuestionService {
     }
 
     @Override
+    public List<QuestionDto> getAllByAuthorId(UUID id) {
+        return questionRepository.findAllByAuthorId(id).stream()
+                .map(q -> modelMapper.map(q, QuestionDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<QuestionDto> getById(UUID id) throws QuestionNotFoundException {
         Optional<Question> question = questionRepository.findById(id);
         if (question.isPresent()) {

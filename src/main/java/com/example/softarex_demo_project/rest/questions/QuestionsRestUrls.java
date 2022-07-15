@@ -10,7 +10,6 @@ public interface QuestionsRestUrls {
     String BASE_URL = "/api/v1/questions/";
     String ID_URL = "{id}";
     String CREATE_URL = "create";
-    String USER_QUESTIONS_URL = "user/{id}";
-    String ANSWER_URL = "answer/{id}";
+    String ANSWER_URL = "{id}/answer";
     String EDIT_URL = "{id}/edit";
 }

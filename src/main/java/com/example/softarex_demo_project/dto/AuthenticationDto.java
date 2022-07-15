@@ -3,6 +3,7 @@ package com.example.softarex_demo_project.dto;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.UUID;
 
 /**
  * This class is a DTO of Authentication class with username and token.
@@ -13,16 +14,14 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class AuthenticationDto {
     @NotEmpty
+    private UUID userId;
+
+    @NotEmpty
     private String username;
 
     @NotEmpty
     private String token;
 
     public AuthenticationDto() {
-    }
-
-    public AuthenticationDto(String username, String token) {
-        this.username = username;
-        this.token = token;
     }
 }

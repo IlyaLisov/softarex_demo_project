@@ -20,6 +20,8 @@ public interface QuestionService {
 
     List<QuestionDto> getAllByRecipientId(UUID id);
 
+    List<QuestionDto> getAllByAuthorId(UUID id);
+
     Optional<QuestionDto> getById(UUID id) throws QuestionNotFoundException;
 
     QuestionDto save(CreateQuestionDto question);
