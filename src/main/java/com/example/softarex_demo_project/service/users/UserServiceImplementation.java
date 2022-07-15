@@ -12,6 +12,7 @@ import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.repository.RoleRepository;
 import com.example.softarex_demo_project.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,9 @@ public class UserServiceImplementation implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public UserDto register(RegisterUserDto registerUserDto) throws UserAlreadyExistsException {
         registerUserDto.setUsername(registerUserDto.getEmail());
@@ -57,7 +61,7 @@ public class UserServiceImplementation implements UserService {
             user.setUpdated(new Date());
             userRepository.save(user);
             log.info("IN register - User {} was registered.", registerUserDto);
-            return UserDto.fromUser(userRepository.findByUsername(registerUserDto.getUsername()));
+            return modelMapper.map(userRepository.findByUsername(registerUserDto.getUsername()), UserDto.class);
         } else {
             log.warn("IN UserService.register - User {} was not registered - username already exists.", registerUserDto);
             throw new UserAlreadyExistsException("User with email " + registerUserDto.getEmail() + " already exists.");
@@ -69,7 +73,7 @@ public class UserServiceImplementation implements UserService {
         List<User> users = userRepository.findAll();
         log.info("IN UserService.getAll - {} users were found.", users.size());
         return users.stream()
-                .map(UserDto::fromUser)
+                .map(u -> modelMapper.map(u, UserDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -81,7 +85,7 @@ public class UserServiceImplementation implements UserService {
             throw new UserNotFoundException("User " + username + " not found.");
         } else {
             log.info("IN UserService.getByUsername - User {} was found.", username);
-            return Optional.of(UserDto.fromUser(user));
+            return Optional.of(modelMapper.map(user, UserDto.class));
         }
     }
 
@@ -90,7 +94,7 @@ public class UserServiceImplementation implements UserService {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             log.info("IN UserService.getById - User {} was found.", user.get());
-            return Optional.of(UserDto.fromUser(user.get()));
+            return Optional.of(modelMapper.map(user.get(), UserDto.class));
         } else {
             log.warn("IN UserService.getById - User with id {} was not found.", id);
             throw new UserNotFoundException("User " + id + " not found.");
@@ -118,7 +122,7 @@ public class UserServiceImplementation implements UserService {
             userFromDatabase.get().setUpdated(new Date());
             userRepository.save(userFromDatabase.get());
             log.info("IN UserService.update - User {} was updated.", editUserDto);
-            return UserDto.fromUser(userFromDatabase.get());
+            return modelMapper.map(userFromDatabase.get(), UserDto.class);
         } else {
             log.warn("IN UserService.update - User {} was not updated.", editUserDto);
             throw new UserAlreadyExistsException("User with email " + editUserDto.getEmail() + " already exists.");

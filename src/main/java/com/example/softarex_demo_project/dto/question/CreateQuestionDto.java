@@ -1,7 +1,6 @@
 package com.example.softarex_demo_project.dto.question;
 
 import com.example.softarex_demo_project.model.question.AnswerType;
-import com.example.softarex_demo_project.model.question.Question;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
@@ -30,15 +29,4 @@ public class CreateQuestionDto {
 
     private AnswerType answerType;
     private List<String> options;
-
-    public static CreateQuestionDto fromQuestion(Question question, List<String> options) {
-        CreateQuestionDto createQuestionDto = new CreateQuestionDto();
-        createQuestionDto.setId(question.getId());
-        createQuestionDto.setAuthorEmail(question.getAuthor().getEmail());
-        createQuestionDto.setRecipientEmail(question.getRecipient().getEmail());
-        createQuestionDto.setQuestion(question.getQuestion());
-        createQuestionDto.setAnswerType(question.getAnswerEntity().getAnswerType());
-        createQuestionDto.setOptions(options);
-        return createQuestionDto;
-    }
 }

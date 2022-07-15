@@ -20,20 +20,6 @@ public class RegisterUserDto extends UserDto {
     @Length(min = 4, max = 255, message = "Length must be in {min} - {max}")
     private String passwordConfirmation;
 
-    public static RegisterUserDto fromUser(User user, String passwordConfirmation) {
-        RegisterUserDto userDto = new RegisterUserDto();
-        userDto.setId(user.getId());
-        userDto.setUsername(user.getUsername());
-        userDto.setFirstName(user.getFirstName());
-        userDto.setLastName(user.getLastName());
-        userDto.setEmail(user.getEmail());
-        userDto.setPhoneNumber(user.getPhoneNumber());
-        userDto.setPassword(user.getPassword());
-        userDto.setRoles(user.getRoles());
-        userDto.setPasswordConfirmation(passwordConfirmation);
-        return userDto;
-    }
-
     public User toUser() {
         User user = new User();
         user.setId(id);

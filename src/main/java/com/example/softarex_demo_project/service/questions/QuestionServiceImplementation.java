@@ -12,10 +12,12 @@ import com.example.softarex_demo_project.model.question.MultiLineAnswerEntity;
 import com.example.softarex_demo_project.model.question.Question;
 import com.example.softarex_demo_project.model.question.RadioButtonAnswerEntity;
 import com.example.softarex_demo_project.model.question.SingleLineAnswerEntity;
+import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.repository.AnswerRepository;
 import com.example.softarex_demo_project.repository.QuestionRepository;
 import com.example.softarex_demo_project.service.users.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -43,19 +45,22 @@ public class QuestionServiceImplementation implements QuestionService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private ModelMapper modelMapper;
+
     @Override
     public List<QuestionDto> getAll() {
         List<Question> questions = questionRepository.findAll();
         log.info("IN QuestionService.getAll - {} questions were found.", questions.size());
         return questions.stream()
-                .map(QuestionDto::fromQuestion)
+                .map(q -> modelMapper.map(q, QuestionDto.class))
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<QuestionDto> getAllByRecipientId(UUID id) {
         return questionRepository.findAllByRecipientId(id).stream()
-                .map(QuestionDto::fromQuestion)
+                .map(q -> modelMapper.map(q, QuestionDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -64,7 +69,7 @@ public class QuestionServiceImplementation implements QuestionService {
         Optional<Question> question = questionRepository.findById(id);
         if (question.isPresent()) {
             log.info("IN QuestionService.getById - Question {} was found.", question.get());
-            return Optional.of(QuestionDto.fromQuestion(question.get()));
+            return Optional.of(modelMapper.map(question.get(), QuestionDto.class));
         } else {
             log.warn("IN QuestionService.getById - Question with id {} was not found.", id);
             throw new QuestionNotFoundException("Question " + id + " not found.");
@@ -74,8 +79,8 @@ public class QuestionServiceImplementation implements QuestionService {
     @Override
     public QuestionDto save(CreateQuestionDto questionDto) {
         Question question = new Question();
-        question.setAuthor(userService.getByUsername(questionDto.getAuthorEmail()).get().toUser());
-        question.setRecipient(userService.getByUsername(questionDto.getRecipientEmail()).get().toUser());
+        question.setAuthor(modelMapper.map(userService.getByUsername(questionDto.getAuthorEmail()).get(), User.class));
+        question.setRecipient(modelMapper.map(userService.getByUsername(questionDto.getRecipientEmail()).get(), User.class));
         question.setQuestion(questionDto.getQuestion());
         question.setCreated(new Date());
         question.setUpdated(new Date());
@@ -83,7 +88,7 @@ public class QuestionServiceImplementation implements QuestionService {
         question.setAnswerEntity(resolveAnswerEntity(questionDto));
         log.info("IN QuestionService.save - Question {} was saved.", question);
         questionRepository.save(question);
-        return QuestionDto.fromQuestion(question);
+        return modelMapper.map(question, QuestionDto.class);
     }
 
     private AnswerEntity resolveAnswerEntity(CreateQuestionDto questionDto) {
@@ -124,12 +129,12 @@ public class QuestionServiceImplementation implements QuestionService {
             AnswerEntity answerEntity = questionFromDatabase.get().getAnswerEntity();
             answerRepository.delete(answerEntity);
             questionFromDatabase.get().setAnswerEntity(resolveAnswerEntity(question));
-            questionFromDatabase.get().setRecipient(userService.getByUsername(question.getRecipientEmail()).get().toUser());
+            questionFromDatabase.get().setRecipient(modelMapper.map(userService.getByUsername(question.getRecipientEmail()).get(), User.class));
             questionFromDatabase.get().setQuestion(question.getQuestion());
             questionFromDatabase.get().setUpdated(new Date());
             questionRepository.save(questionFromDatabase.get());
             log.info("IN QuestionService.update - Question {} was updated.", question);
-            return QuestionDto.fromQuestion(questionFromDatabase.get());
+            return modelMapper.map(questionFromDatabase.get(), QuestionDto.class);
         } else {
             log.warn("IN QuestionService.getById - Question {} was not updated.", question);
             throw new QuestionNotFoundException("Question " + question.getId() + " not found.");
@@ -162,7 +167,7 @@ public class QuestionServiceImplementation implements QuestionService {
             question.get().setAnswerEntity(answerEntity);
             questionRepository.save(question.get());
             log.info("IN QuestionService.answerQuestion - Question {} was answered.", question);
-            return QuestionDto.fromQuestion(question.get());
+            return modelMapper.map(question.get(), QuestionDto.class);
         } else {
             log.warn("IN QuestionService.answerQuestion - Question {} was answered.", question);
             throw new QuestionNotFoundException("Question " + answerQuestionDto.getQuestionId() + " not found.");
