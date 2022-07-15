@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -85,7 +86,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public Optional<UserDto> getById(Long id) throws UserNotFoundException {
+    public Optional<UserDto> getById(UUID id) throws UserNotFoundException {
         Optional<User> user = userRepository.findById(id);
         if (user.isPresent()) {
             log.info("IN UserService.getById - User {} was found.", user.get());
@@ -125,7 +126,7 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public void delete(Long id) throws UserNotFoundException {
+    public void delete(UUID id) throws UserNotFoundException {
         if (userRepository.findById(id).isPresent()) {
             log.info("IN UserService.delete - User with id {} was deleted.", id);
             userRepository.deleteById(id);

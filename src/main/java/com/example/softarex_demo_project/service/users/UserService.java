@@ -9,6 +9,7 @@ import com.example.softarex_demo_project.model.exceptions.user.UserNotFoundExcep
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * This interface is a base interface for actions with users.
@@ -23,9 +24,9 @@ public interface UserService {
 
     Optional<UserDto> getByUsername(String username) throws UserNotFoundException;
 
-    Optional<UserDto> getById(Long id) throws UserNotFoundException;
+    Optional<UserDto> getById(UUID id) throws UserNotFoundException;
 
     UserDto update(EditUserDto user) throws UserNotFoundException, DataNotValidException, UserAlreadyExistsException;
 
-    void delete(Long id) throws UserNotFoundException;
+    void delete(UUID id) throws UserNotFoundException;
 }

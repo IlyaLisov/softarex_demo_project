@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import static com.example.softarex_demo_project.rest.users.UserRestUrls.baseUrl;
 
@@ -34,17 +35,17 @@ public class UserRestControllerV1 implements UserRestUrls {
     private UserService userService;
 
     @GetMapping(idUrl)
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") UUID id) {
         return new ResponseEntity<>(userService.getById(id).get(), HttpStatus.OK);
     }
 
     @GetMapping(editUrl)
-    public ResponseEntity<UserDto> editUserById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<UserDto> editUserById(@PathVariable(name = "id") UUID id) {
         return getUserById(id);
     }
 
     @PutMapping(editUrl)
-    public ResponseEntity doEditUserById(@PathVariable(name = "id") Long id, @RequestBody @Valid EditUserDto editUserDto) {
+    public ResponseEntity doEditUserById(@PathVariable(name = "id") UUID id, @RequestBody @Valid EditUserDto editUserDto) {
         Map<Object, Object> response = new HashMap<>();
         editUserDto.setId(id);
         response.put("user", userService.update(editUserDto));
@@ -53,7 +54,7 @@ public class UserRestControllerV1 implements UserRestUrls {
     }
 
     @DeleteMapping(idUrl)
-    public ResponseEntity doDelete(@PathVariable(name = "id") Long id) {
+    public ResponseEntity doDelete(@PathVariable(name = "id") UUID id) {
         Map<Object, Object> response = new HashMap<>();
         userService.delete(id);
         response.put("message", "User was successfully deleted.");

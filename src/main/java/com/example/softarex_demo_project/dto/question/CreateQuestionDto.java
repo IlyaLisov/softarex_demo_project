@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class is a DTO of Question class for creation.
@@ -16,7 +17,7 @@ import java.util.List;
  */
 @Data
 public class CreateQuestionDto {
-    private Long id;
+    private UUID id;
     private String authorEmail;
 
     @NotNull

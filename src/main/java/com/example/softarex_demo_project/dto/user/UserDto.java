@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class is a DTO of User class for ROLE_USER users.
@@ -19,7 +20,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class UserDto {
-    protected Long id;
+    protected UUID id;
     protected String username;
 
     @Length(max = 255, message = "Max length is {max}")

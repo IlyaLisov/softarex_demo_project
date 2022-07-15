@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -53,14 +54,14 @@ public class QuestionServiceImplementation implements QuestionService {
     }
 
     @Override
-    public List<QuestionDto> getAllByRecipientId(Long id) {
+    public List<QuestionDto> getAllByRecipientId(UUID id) {
         return questionRepository.findAllByRecipientId(id).stream()
                 .map(QuestionDto::fromQuestion)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<QuestionDto> getById(Long id) throws QuestionNotFoundException {
+    public Optional<QuestionDto> getById(UUID id) throws QuestionNotFoundException {
         Optional<Question> question = questionRepository.findById(id);
         if (question.isPresent()) {
             log.info("IN QuestionService.getById - Question {} was found.", question.get());
@@ -178,7 +179,7 @@ public class QuestionServiceImplementation implements QuestionService {
     }
 
     @Override
-    public void delete(Long id) {
+    public void delete(UUID id) {
         if (questionRepository.findById(id).isPresent()) {
             log.info("IN QuestionService.delete - Question with id {} was deleted.", id);
             questionRepository.deleteById(id);

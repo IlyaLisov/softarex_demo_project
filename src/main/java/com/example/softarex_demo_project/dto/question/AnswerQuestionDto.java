@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * This class is a DTO of Question class for answering.
@@ -14,7 +15,7 @@ import java.util.List;
  */
 @Data
 public class AnswerQuestionDto {
-    private Long questionId;
+    private UUID questionId;
     private String stringAnswer;
     private int optionIndex;
     private List<String> answerList;

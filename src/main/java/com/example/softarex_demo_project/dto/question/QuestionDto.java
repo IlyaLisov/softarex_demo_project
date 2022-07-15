@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
+import java.util.UUID;
 
 /**
  * This class is a DTO of Question class.
@@ -18,7 +19,7 @@ import javax.validation.constraints.NotEmpty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 public class QuestionDto {
-    private Long id;
+    private UUID id;
 
     @Valid
     private UserDto author;

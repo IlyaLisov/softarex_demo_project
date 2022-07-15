@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * This class is a base class for entities.
@@ -31,7 +32,7 @@ import java.util.Objects;
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
+    protected UUID id;
 
     @CreatedDate
     @Column(name = "created")

@@ -26,6 +26,7 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.example.softarex_demo_project.rest.questions.QuestionsRestUrls.baseUrl;
@@ -54,12 +55,12 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
     }
 
     @GetMapping(idUrl)
-    public ResponseEntity<QuestionDto> getQuestionById(@PathVariable(name = "id") Long id) {
+    public ResponseEntity<QuestionDto> getQuestionById(@PathVariable(name = "id") UUID id) {
         return new ResponseEntity<>(questionService.getById(id).get(), HttpStatus.OK);
     }
 
     @PutMapping(editUrl)
-    public ResponseEntity<QuestionDto> editQuestion(@PathVariable Long id, @RequestBody @Valid CreateQuestionDto createQuestionDto) {
+    public ResponseEntity<QuestionDto> editQuestion(@PathVariable UUID id, @RequestBody @Valid CreateQuestionDto createQuestionDto) {
         createQuestionDto.setId(id);
         return ResponseEntity.ok(questionService.update(createQuestionDto));
     }
@@ -82,24 +83,24 @@ public class QuestionsRestControllerV1 implements QuestionsRestUrls {
     }
 
     @GetMapping(userQuestionsUrl)
-    public List<QuestionDto> userQuestions(@PathVariable Long id) {
+    public List<QuestionDto> userQuestions(@PathVariable UUID id) {
         return questionService.getAllByRecipientId(id);
     }
 
     @PostMapping(answerUrl)
-    public ResponseEntity<QuestionDto> answerQuestion(@PathVariable Long id, @RequestBody @Valid AnswerQuestionDto answerQuestionDto) {
+    public ResponseEntity<QuestionDto> answerQuestion(@PathVariable UUID id, @RequestBody @Valid AnswerQuestionDto answerQuestionDto) {
         answerQuestionDto.setQuestionId(id);
         return ResponseEntity.ok(questionService.answerQuestion(answerQuestionDto));
     }
 
     @PutMapping(answerUrl)
-    public ResponseEntity<QuestionDto> editAnswerQuestion(@PathVariable Long id, @RequestBody @Valid AnswerQuestionDto answerQuestionDto) {
+    public ResponseEntity<QuestionDto> editAnswerQuestion(@PathVariable UUID id, @RequestBody @Valid AnswerQuestionDto answerQuestionDto) {
         answerQuestionDto.setQuestionId(id);
         return ResponseEntity.ok(questionService.answerQuestion(answerQuestionDto));
     }
 
     @DeleteMapping(idUrl)
-    public ResponseEntity deleteQuestion(@PathVariable Long id) {
+    public ResponseEntity deleteQuestion(@PathVariable UUID id) {
         Map<Object, Object> response = new HashMap<>();
         questionService.delete(id);
         response.put("message", "Question was successfully deleted.");

@@ -7,6 +7,7 @@ import com.example.softarex_demo_project.model.exceptions.question.QuestionNotFo
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 /**
  * This interface is a base interface for actions with questions.
@@ -17,9 +18,9 @@ import java.util.Optional;
 public interface QuestionService {
     List<QuestionDto> getAll();
 
-    List<QuestionDto> getAllByRecipientId(Long id);
+    List<QuestionDto> getAllByRecipientId(UUID id);
 
-    Optional<QuestionDto> getById(Long id) throws QuestionNotFoundException;
+    Optional<QuestionDto> getById(UUID id) throws QuestionNotFoundException;
 
     QuestionDto save(CreateQuestionDto question);
 
@@ -27,5 +28,5 @@ public interface QuestionService {
 
     QuestionDto answerQuestion(AnswerQuestionDto answerQuestionDto) throws QuestionNotFoundException;
 
-    void delete(Long id) throws QuestionNotFoundException;
+    void delete(UUID id) throws QuestionNotFoundException;
 }
