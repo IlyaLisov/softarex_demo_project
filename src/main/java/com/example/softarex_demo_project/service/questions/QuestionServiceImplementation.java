@@ -1,5 +1,7 @@
 package com.example.softarex_demo_project.service.questions;
 
+import com.example.softarex_demo_project.dto.mappers.QuestionMapperImplementation;
+import com.example.softarex_demo_project.dto.mappers.UserMapper;
 import com.example.softarex_demo_project.dto.question.AnswerQuestionDto;
 import com.example.softarex_demo_project.dto.question.CreateQuestionDto;
 import com.example.softarex_demo_project.dto.question.QuestionDto;
@@ -12,18 +14,15 @@ import com.example.softarex_demo_project.model.question.MultiLineAnswerEntity;
 import com.example.softarex_demo_project.model.question.Question;
 import com.example.softarex_demo_project.model.question.RadioButtonAnswerEntity;
 import com.example.softarex_demo_project.model.question.SingleLineAnswerEntity;
-import com.example.softarex_demo_project.model.user.User;
 import com.example.softarex_demo_project.repository.AnswerRepository;
 import com.example.softarex_demo_project.repository.QuestionRepository;
 import com.example.softarex_demo_project.service.users.UserService;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -46,48 +45,47 @@ public class QuestionServiceImplementation implements QuestionService {
     private UserService userService;
 
     @Autowired
-    private ModelMapper modelMapper;
+    private QuestionMapperImplementation questionMapperImplementation;
 
     @Override
     public List<QuestionDto> getAll() {
-        List<Question> questions = questionRepository.findAll();
-        log.info("IN QuestionService.getAll - {} questions were found.", questions.size());
-        return questions.stream()
-                .map(q -> modelMapper.map(q, QuestionDto.class))
+        return questionRepository.findAll().stream()
+                .map(questionMapperImplementation::questionToQuestionDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<QuestionDto> getAllByRecipientId(UUID id) {
         return questionRepository.findAllByRecipientId(id).stream()
-                .map(q -> modelMapper.map(q, QuestionDto.class))
+                .map(questionMapperImplementation::questionToQuestionDto)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<QuestionDto> getAllByAuthorId(UUID id) {
         return questionRepository.findAllByAuthorId(id).stream()
-                .map(q -> modelMapper.map(q, QuestionDto.class))
+                .map(questionMapperImplementation::questionToQuestionDto)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<QuestionDto> getById(UUID id) throws QuestionNotFoundException {
-        Optional<Question> question = questionRepository.findById(id);
-        if (question.isPresent()) {
-            log.info("IN QuestionService.getById - Question {} was found.", question.get());
-            return Optional.of(modelMapper.map(question.get(), QuestionDto.class));
-        } else {
-            log.warn("IN QuestionService.getById - Question with id {} was not found.", id);
-            throw new QuestionNotFoundException("Question " + id + " not found.");
-        }
+    public QuestionDto getById(UUID id) throws QuestionNotFoundException {
+        return questionRepository.findById(id)
+                .map((question) -> {
+                    log.info("IN QuestionService.getById - Question {} was found.", question);
+                    return questionMapperImplementation.questionToQuestionDto(question);
+                })
+                .orElseThrow(() -> {
+                    log.warn("IN QuestionService.getById - Question with id {} was not found.", id);
+                    return new QuestionNotFoundException();
+                });
     }
 
     @Override
     public QuestionDto save(CreateQuestionDto questionDto) {
         Question question = new Question();
-        question.setAuthor(modelMapper.map(userService.getByUsername(questionDto.getAuthorEmail()).get(), User.class));
-        question.setRecipient(modelMapper.map(userService.getByUsername(questionDto.getRecipientEmail()).get(), User.class));
+        question.setAuthor(UserMapper.INSTANCE.userDtoToUser(userService.getByUsername(questionDto.getAuthorEmail())));
+        question.setRecipient(UserMapper.INSTANCE.userDtoToUser(userService.getByUsername(questionDto.getRecipientEmail())));
         question.setQuestion(questionDto.getQuestion());
         question.setCreated(new Date());
         question.setUpdated(new Date());
@@ -95,7 +93,7 @@ public class QuestionServiceImplementation implements QuestionService {
         question.setAnswerEntity(resolveAnswerEntity(questionDto));
         log.info("IN QuestionService.save - Question {} was saved.", question);
         questionRepository.save(question);
-        return modelMapper.map(question, QuestionDto.class);
+        return questionMapperImplementation.questionToQuestionDto(question);
     }
 
     private AnswerEntity resolveAnswerEntity(CreateQuestionDto questionDto) {
@@ -130,65 +128,70 @@ public class QuestionServiceImplementation implements QuestionService {
     }
 
     @Override
-    public QuestionDto update(CreateQuestionDto question) throws QuestionNotFoundException {
-        Optional<Question> questionFromDatabase = questionRepository.findById(question.getId());
-        if (questionFromDatabase.isPresent()) {
-            AnswerEntity answerEntity = questionFromDatabase.get().getAnswerEntity();
-            answerRepository.delete(answerEntity);
-            questionFromDatabase.get().setAnswerEntity(resolveAnswerEntity(question));
-            questionFromDatabase.get().setRecipient(modelMapper.map(userService.getByUsername(question.getRecipientEmail()).get(), User.class));
-            questionFromDatabase.get().setQuestion(question.getQuestion());
-            questionFromDatabase.get().setUpdated(new Date());
-            questionRepository.save(questionFromDatabase.get());
-            log.info("IN QuestionService.update - Question {} was updated.", question);
-            return modelMapper.map(questionFromDatabase.get(), QuestionDto.class);
-        } else {
-            log.warn("IN QuestionService.getById - Question {} was not updated.", question);
-            throw new QuestionNotFoundException("Question " + question.getId() + " not found.");
-        }
+    public QuestionDto update(CreateQuestionDto questionDto) throws QuestionNotFoundException {
+        return questionRepository.findById(questionDto.getId())
+                .map((question) -> {
+                    AnswerEntity answerEntity = question.getAnswerEntity();
+                    answerRepository.delete(answerEntity);
+                    question.setAnswerEntity(resolveAnswerEntity(questionDto));
+                    question.setRecipient(UserMapper.INSTANCE.userDtoToUser(userService.getByUsername(questionDto.getRecipientEmail())));
+                    question.setQuestion(question.getQuestion());
+                    question.setUpdated(new Date());
+                    questionRepository.save(question);
+                    log.info("IN QuestionService.update - Question {} was updated.", question);
+                    return questionMapperImplementation.questionToQuestionDto(question);
+                })
+                .orElseThrow(() -> {
+                    log.warn("IN QuestionService.getById - Question {} was not updated.", questionDto);
+                    return new QuestionNotFoundException();
+                });
     }
 
     @Override
     public QuestionDto answerQuestion(AnswerQuestionDto answerQuestionDto) throws QuestionNotFoundException {
-        Optional<Question> question = questionRepository.findById(answerQuestionDto.getQuestionId());
-        if (question.isPresent()) {
-            AnswerEntity answerEntity = question.get().getAnswerEntity();
-            switch (answerEntity.getAnswerType()) {
-                case SINGLE_LINE_TEXT:
-                    ((SingleLineAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getStringAnswer());
-                    break;
-                case MULTILINE_TEXT:
-                    ((MultiLineAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getStringAnswer());
-                    break;
-                case CHECKBOX:
-                    ((CheckboxAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getAnswerList());
-                    break;
-                case RADIO_BUTTON:
-                    RadioButtonAnswerEntity radioButtonAnswerEntity = (RadioButtonAnswerEntity) answerEntity;
-                    radioButtonAnswerEntity.setAnswer(radioButtonAnswerEntity.getOptions().get(answerQuestionDto.getOptionIndex()));
-                    break;
-                case DATE:
-                    ((DateAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getDate());
-                    break;
-            }
-            question.get().setAnswerEntity(answerEntity);
-            questionRepository.save(question.get());
-            log.info("IN QuestionService.answerQuestion - Question {} was answered.", question);
-            return modelMapper.map(question.get(), QuestionDto.class);
-        } else {
-            log.warn("IN QuestionService.answerQuestion - Question {} was answered.", question);
-            throw new QuestionNotFoundException("Question " + answerQuestionDto.getQuestionId() + " not found.");
-        }
+        return questionRepository.findById(answerQuestionDto.getQuestionId())
+                .map((question) -> {
+                    AnswerEntity answerEntity = question.getAnswerEntity();
+                    switch (answerEntity.getAnswerType()) {
+                        case SINGLE_LINE_TEXT:
+                            ((SingleLineAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getStringAnswer());
+                            break;
+                        case MULTILINE_TEXT:
+                            ((MultiLineAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getStringAnswer());
+                            break;
+                        case CHECKBOX:
+                            ((CheckboxAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getAnswerList());
+                            break;
+                        case RADIO_BUTTON:
+                            RadioButtonAnswerEntity radioButtonAnswerEntity = (RadioButtonAnswerEntity) answerEntity;
+                            radioButtonAnswerEntity.setAnswer(radioButtonAnswerEntity.getOptions().get(answerQuestionDto.getOptionIndex()));
+                            break;
+                        case DATE:
+                            ((DateAnswerEntity) answerEntity).setAnswer(answerQuestionDto.getDate());
+                            break;
+                    }
+                    question.setAnswerEntity(answerEntity);
+                    questionRepository.save(question);
+                    log.info("IN QuestionService.answerQuestion - Question {} was answered.", question);
+                    return questionMapperImplementation.questionToQuestionDto(question);
+                })
+                .orElseThrow(() -> {
+                    log.warn("IN QuestionService.answerQuestion - Question {} was not answered.", answerQuestionDto);
+                    return new QuestionNotFoundException();
+                });
     }
 
     @Override
-    public void delete(UUID id) {
-        if (questionRepository.findById(id).isPresent()) {
-            log.info("IN QuestionService.delete - Question with id {} was deleted.", id);
-            questionRepository.deleteById(id);
-        } else {
-            log.warn("IN QuestionService.delete - Question with id {} was not found.", id);
-            throw new QuestionNotFoundException("Question " + id + " not found.");
-        }
+    public void delete(UUID id) throws QuestionNotFoundException {
+        questionRepository.findById(id)
+                .map((user) -> {
+                    log.info("IN QuestionService.delete - Question with id {} was deleted.", id);
+                    questionRepository.deleteById(id);
+                    return user;
+                })
+                .orElseThrow(() -> {
+                    log.warn("IN QuestionService.delete - Question with id {} was not found.", id);
+                    return new QuestionNotFoundException("Question " + id + " not found.");
+                });
     }
 }

@@ -4,27 +4,21 @@ import com.example.softarex_demo_project.dto.AuthenticationDto;
 import com.example.softarex_demo_project.dto.AuthenticationRequestDto;
 import com.example.softarex_demo_project.dto.user.RegisterUserDto;
 import com.example.softarex_demo_project.dto.user.UserDto;
-import com.example.softarex_demo_project.model.exceptions.user.DataNotValidException;
 import com.example.softarex_demo_project.security.jwt.JwtTokenProvider;
-import com.example.softarex_demo_project.service.users.UserService;
+import com.example.softarex_demo_project.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.BASE_URL;
+import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.LOGIN_ULR;
+import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.REGISTER_URL;
 
 /**
  * This class is a controller for authentication of users.
@@ -34,7 +28,7 @@ import static com.example.softarex_demo_project.rest.authentication.Authenticati
  */
 @RestController
 @RequestMapping(value = BASE_URL)
-public class AuthenticationRestControllerV1 implements AuthenticationRestUrls {
+public class AuthenticationRestControllerV1 {
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -42,33 +36,22 @@ public class AuthenticationRestControllerV1 implements AuthenticationRestUrls {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private UserService userService;
+    private SecurityService securityService;
 
     @PostMapping(LOGIN_ULR)
-    public ResponseEntity<AuthenticationDto> doLogin(@RequestBody @Valid AuthenticationRequestDto requestDto) {
+    public AuthenticationDto login(@RequestBody @Valid AuthenticationRequestDto requestDto) {
         AuthenticationDto authenticationDto = new AuthenticationDto();
         String username = requestDto.getUsername();
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, requestDto.getPassword()));
-        Optional<UserDto> user = userService.getByUsername(username);
+        UserDto user = securityService.getByUsername(username);
         authenticationDto.setUsername(username);
-        authenticationDto.setToken(jwtTokenProvider.createToken(user.get().getId(), username, user.get().getRoles()));
-        authenticationDto.setUserId(user.get().getId());
-        return ResponseEntity.ok(authenticationDto);
+        authenticationDto.setToken(jwtTokenProvider.createToken(user.getId(), username, user.getRoles()));
+        authenticationDto.setUserId(user.getId());
+        return authenticationDto;
     }
 
     @PostMapping(REGISTER_URL)
-    public ResponseEntity<UserDto> doRegister(@RequestBody @Valid RegisterUserDto registerUserDto) throws DataNotValidException {
-        if (!Objects.equals(registerUserDto.getPassword(), registerUserDto.getPasswordConfirmation())) {
-            throw new DataNotValidException("Passwords must be the same.");
-        }
-        UserDto userDto = userService.register(registerUserDto);
-        return ResponseEntity.ok(userDto);
-    }
-
-    @ExceptionHandler
-    public ResponseEntity handleException(Exception e) {
-        Map<String, String> result = new HashMap<>();
-        result.put("error", e.getMessage());
-        return new ResponseEntity(result, HttpStatus.OK);
+    public UserDto register(@RequestBody @Valid RegisterUserDto registerUserDto) {
+        return securityService.register(registerUserDto);
     }
 }

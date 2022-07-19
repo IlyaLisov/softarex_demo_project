@@ -6,7 +6,6 @@ import com.example.softarex_demo_project.dto.question.QuestionDto;
 import com.example.softarex_demo_project.model.exceptions.question.QuestionNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -22,7 +21,7 @@ public interface QuestionService {
 
     List<QuestionDto> getAllByAuthorId(UUID id);
 
-    Optional<QuestionDto> getById(UUID id) throws QuestionNotFoundException;
+    QuestionDto getById(UUID id) throws QuestionNotFoundException;
 
     QuestionDto save(CreateQuestionDto question);
 

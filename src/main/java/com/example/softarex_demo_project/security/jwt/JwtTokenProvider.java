@@ -1,6 +1,5 @@
 package com.example.softarex_demo_project.security.jwt;
 
-import com.example.softarex_demo_project.model.user.Role;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
@@ -44,9 +42,9 @@ public class JwtTokenProvider {
         secret = Base64.getEncoder().encodeToString(secret.getBytes());
     }
 
-    public String createToken(UUID userId, String username, List<Role> roles) {
+    public String createToken(UUID userId, String username, List<String> roles) {
         Claims claims = Jwts.claims().setSubject(username);
-        claims.put("roles", getRoleNames(roles));
+        claims.put("roles", roles);
         claims.put("userId", userId);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -76,7 +74,7 @@ public class JwtTokenProvider {
         if (bearerToken != null && bearerToken.startsWith("Bearer_")) {
             return bearerToken.substring(7);
         }
-        return null;
+        return "";
     }
 
     public boolean validateToken(String token) {
@@ -86,13 +84,5 @@ public class JwtTokenProvider {
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }
-    }
-
-    private List<String> getRoleNames(List<Role> userRoles) {
-        List<String> result = new ArrayList<>();
-        userRoles.forEach(role -> {
-            result.add(role.getName());
-        });
-        return result;
     }
 }

@@ -3,13 +3,9 @@ package com.example.softarex_demo_project.rest.users;
 import com.example.softarex_demo_project.dto.question.QuestionDto;
 import com.example.softarex_demo_project.dto.user.EditUserDto;
 import com.example.softarex_demo_project.dto.user.UserDto;
-import com.example.softarex_demo_project.service.questions.QuestionService;
-import com.example.softarex_demo_project.service.users.UserService;
+import com.example.softarex_demo_project.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -17,13 +13,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.example.softarex_demo_project.rest.users.UserRestUrls.BASE_URL;
+import static com.example.softarex_demo_project.rest.users.UserRestUrls.FROM_QUESTIONS_URL;
+import static com.example.softarex_demo_project.rest.users.UserRestUrls.ID_URL;
+import static com.example.softarex_demo_project.rest.users.UserRestUrls.TO_QUESTIONS_URL;
+import static com.example.softarex_demo_project.rest.users.UserRestUrls.USER_EMAILS;
 
 /**
  * This class is a controller for users.
@@ -33,54 +33,42 @@ import static com.example.softarex_demo_project.rest.users.UserRestUrls.BASE_URL
  */
 @RestController
 @RequestMapping(value = BASE_URL)
-public class UserRestControllerV1 implements UserRestUrls {
+public class UserRestControllerV1 {
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private QuestionService questionService;
+    private SecurityService securityService;
 
     @GetMapping(ID_URL)
-    public ResponseEntity<UserDto> getUserById(@PathVariable(name = "id") UUID id) {
-        return new ResponseEntity<>(userService.getById(id).get(), HttpStatus.OK);
+    public UserDto getUserById(@PathVariable(name = "id") UUID id, HttpServletRequest request) {
+        return securityService.getUserById(id, request);
     }
 
-    @GetMapping(EDIT_URL)
-    public ResponseEntity<UserDto> editUserById(@PathVariable(name = "id") UUID id) {
-        return getUserById(id);
-    }
-
-    @PutMapping(EDIT_URL)
-    public ResponseEntity doEditUserById(@PathVariable(name = "id") UUID id, @RequestBody @Valid EditUserDto editUserDto) {
-        Map<Object, Object> response = new HashMap<>();
+    @PutMapping(ID_URL)
+    public UserDto editUserById(@PathVariable(name = "id") UUID id, @RequestBody @Valid EditUserDto editUserDto,
+                                HttpServletRequest request) {
         editUserDto.setId(id);
-        response.put("user", userService.update(editUserDto));
-        response.put("message", "User was edited successfully.");
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return securityService.updateUser(editUserDto, request);
     }
 
     @DeleteMapping(ID_URL)
-    public ResponseEntity doDelete(@PathVariable(name = "id") UUID id) {
-        Map<Object, Object> response = new HashMap<>();
-        userService.delete(id);
-        response.put("message", "User was successfully deleted.");
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public void deleteUserById(@PathVariable(name = "id") UUID id, HttpServletRequest request) {
+        securityService.deleteUser(id, request);
     }
 
     @GetMapping(FROM_QUESTIONS_URL)
-    public List<QuestionDto> fromUserQuestions(@PathVariable UUID id) {
-        return questionService.getAllByAuthorId(id);
+    public List<QuestionDto> fromUserQuestions(@PathVariable UUID id, HttpServletRequest request) {
+        return securityService.getAllQuestionsByAuthorId(id, request);
     }
 
     @GetMapping(TO_QUESTIONS_URL)
-    public List<QuestionDto> toUserQuestions(@PathVariable UUID id) {
-        return questionService.getAllByRecipientId(id);
+    public List<QuestionDto> toUserQuestions(@PathVariable UUID id, HttpServletRequest request) {
+        return securityService.getAllQuestionsByRecipientId(id, request);
     }
 
-    @ExceptionHandler
-    public ResponseEntity handleException(Exception e) {
-        Map<String, String> result = new HashMap<>();
-        result.put("error", e.getMessage());
-        return new ResponseEntity(result, HttpStatus.OK);
+    @GetMapping(USER_EMAILS)
+    public List<String> getUserEmail() {
+        return securityService.getAllUsers().stream()
+                .map(UserDto::getUsername)
+                .collect(Collectors.toList());
     }
+
 }

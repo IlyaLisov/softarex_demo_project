@@ -1,6 +1,5 @@
 package com.example.softarex_demo_project.security.jwt;
 
-import com.example.softarex_demo_project.model.user.Role;
 import com.example.softarex_demo_project.model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -25,7 +24,6 @@ public final class JwtUserFactory {
                 user.getUsername(),
                 user.getFirstName(),
                 user.getLastName(),
-                user.getEmail(),
                 user.getPassword(),
                 user.getPhoneNumber(),
                 mapToGrantedAuthorities(new ArrayList<>(user.getRoles())),
@@ -34,9 +32,9 @@ public final class JwtUserFactory {
         );
     }
 
-    private static List<GrantedAuthority> mapToGrantedAuthorities(List<Role> userRoles) {
+    private static List<GrantedAuthority> mapToGrantedAuthorities(List<String> userRoles) {
         return userRoles.stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName())
-                ).collect(Collectors.toList());
+                .map(SimpleGrantedAuthority::new).
+                collect(Collectors.toList());
     }
 }

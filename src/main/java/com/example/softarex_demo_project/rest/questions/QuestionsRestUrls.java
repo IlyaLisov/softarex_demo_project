@@ -11,5 +11,5 @@ public interface QuestionsRestUrls {
     String ID_URL = "{id}";
     String CREATE_URL = "create";
     String ANSWER_URL = "{id}/answer";
-    String EDIT_URL = "{id}/edit";
+    String ANSWER_TYPES = "answerTypes";
 }

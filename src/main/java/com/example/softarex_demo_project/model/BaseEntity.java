@@ -1,10 +1,8 @@
 package com.example.softarex_demo_project.model;
 
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.Hibernate;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -16,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import java.util.Date;
-import java.util.Objects;
 import java.util.UUID;
 
 /**
@@ -26,10 +23,9 @@ import java.util.UUID;
  * @version 1.0
  */
 @MappedSuperclass
-@Getter
-@Setter
-@ToString
-public class BaseEntity {
+@Data
+@NoArgsConstructor
+public abstract class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     protected UUID id;
@@ -48,17 +44,4 @@ public class BaseEntity {
     @Column(name = "status")
     @NonNull
     protected Status status;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        BaseEntity that = (BaseEntity) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

@@ -1,7 +1,6 @@
 package com.example.softarex_demo_project.dto.question;
 
 import com.example.softarex_demo_project.dto.user.UserDto;
-import com.example.softarex_demo_project.model.question.AnswerEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
@@ -29,5 +28,6 @@ public class QuestionDto {
     @NotEmpty(message = "Question can`t be empty.")
     private String question;
 
-    private AnswerEntity answerEntity;
+    @Valid
+    private AnswerEntityDto answerEntity;
 }

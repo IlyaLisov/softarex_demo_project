@@ -1,13 +1,11 @@
 package com.example.softarex_demo_project.model.question;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.Hibernate;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import java.util.Objects;
 
 /**
  * This class is a class for single line answers.
@@ -16,21 +14,12 @@ import java.util.Objects;
  * @version 1.0
  */
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SingleLineAnswerEntity extends AnswerEntity {
     @Column(name = "single_line_answer")
     private String answer;
-
-    public SingleLineAnswerEntity() {
-        this.answerType = AnswerType.SINGLE_LINE_TEXT;
-    }
-
-    public SingleLineAnswerEntity(String answer) {
-        this.answerType = AnswerType.SINGLE_LINE_TEXT;
-        this.answer = answer;
-    }
 
     @Override
     public String getAnswer() {
@@ -38,15 +27,7 @@ public class SingleLineAnswerEntity extends AnswerEntity {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        SingleLineAnswerEntity that = (SingleLineAnswerEntity) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public AnswerType getAnswerType() {
+        return AnswerType.SINGLE_LINE_TEXT;
     }
 }

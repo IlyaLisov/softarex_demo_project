@@ -8,7 +8,6 @@ import com.example.softarex_demo_project.model.exceptions.user.UserAlreadyExists
 import com.example.softarex_demo_project.model.exceptions.user.UserNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -22,9 +21,9 @@ public interface UserService {
 
     List<UserDto> getAll();
 
-    Optional<UserDto> getByUsername(String username) throws UserNotFoundException;
+    UserDto getByUsername(String username) throws UserNotFoundException;
 
-    Optional<UserDto> getById(UUID id) throws UserNotFoundException;
+    UserDto getById(UUID id) throws UserNotFoundException;
 
     UserDto update(EditUserDto user) throws UserNotFoundException, DataNotValidException, UserAlreadyExistsException;
 

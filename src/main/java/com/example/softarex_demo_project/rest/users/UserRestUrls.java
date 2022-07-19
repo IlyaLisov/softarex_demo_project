@@ -9,7 +9,7 @@ package com.example.softarex_demo_project.rest.users;
 public interface UserRestUrls {
     String BASE_URL = "/api/v1/users/";
     String ID_URL = "{id}";
-    String EDIT_URL = "{id}/edit";
     String FROM_QUESTIONS_URL = "{id}/questions/from";
     String TO_QUESTIONS_URL = "{id}/questions/to";
+    String USER_EMAILS = "emails";
 }

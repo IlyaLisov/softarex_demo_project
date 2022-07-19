@@ -1,15 +1,12 @@
 package com.example.softarex_demo_project.model.question;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.Hibernate;
+import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * This class is a class for checkbox answers.
@@ -18,9 +15,7 @@ import java.util.Objects;
  * @version 1.0
  */
 @Entity
-@Getter
-@Setter
-@ToString
+@Data
 public class CheckboxAnswerEntity extends AnswerEntity {
     @Column(name = "checkbox_options")
     @ElementCollection
@@ -31,34 +26,16 @@ public class CheckboxAnswerEntity extends AnswerEntity {
     private List<String> answer;
 
     public CheckboxAnswerEntity() {
-        this.answerType = AnswerType.CHECKBOX;
-    }
-
-    public CheckboxAnswerEntity(List<String> options) {
-        this.options = options;
-        this.answerType = AnswerType.CHECKBOX;
-    }
-
-    public CheckboxAnswerEntity(List<String> options, List<String> answer) {
-        this.options = options;
-        this.answer = answer;
+        this.options = new ArrayList<>();
     }
 
     @Override
-    public Object getAnswer() {
+    public List<String> getAnswer() {
         return answer;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        CheckboxAnswerEntity that = (CheckboxAnswerEntity) o;
-        return Objects.equals(id, that.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    public AnswerType getAnswerType() {
+        return AnswerType.CHECKBOX;
     }
 }
