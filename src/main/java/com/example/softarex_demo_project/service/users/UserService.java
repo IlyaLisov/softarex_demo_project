@@ -19,6 +19,8 @@ import java.util.UUID;
 public interface UserService {
     UserDto register(RegisterUserDto user) throws UserAlreadyExistsException;
 
+    boolean confirmUserPassword(UUID id, String password);
+
     List<UserDto> getAll();
 
     UserDto getByUsername(String username) throws UserNotFoundException;

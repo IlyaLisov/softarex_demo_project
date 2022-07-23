@@ -12,4 +12,5 @@ public interface UserRestUrls {
     String FROM_QUESTIONS_URL = "{id}/questions/from";
     String TO_QUESTIONS_URL = "{id}/questions/to";
     String USER_EMAILS = "emails";
+    String VALID_PASSWORD = "{id}/validPassword";
 }

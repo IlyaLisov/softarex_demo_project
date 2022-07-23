@@ -22,6 +22,9 @@ public class AuthenticationDto {
     @NotEmpty
     private String token;
 
+    @NotEmpty
+    private String refreshToken;
+
     public AuthenticationDto() {
     }
 }

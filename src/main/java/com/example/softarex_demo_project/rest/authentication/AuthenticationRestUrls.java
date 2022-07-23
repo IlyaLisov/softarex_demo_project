@@ -10,4 +10,5 @@ public interface AuthenticationRestUrls {
     String BASE_URL = "/api/v1/auth/";
     String LOGIN_ULR = "login";
     String REGISTER_URL = "register";
+    String REFRESH_URL = "refresh";
 }

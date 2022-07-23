@@ -64,6 +64,17 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
+    public boolean confirmUserPassword(UUID id, String password) {
+        final boolean[] answer = new boolean[1];
+        userRepository.findById(id)
+                .map(user -> {
+                    answer[0] = passwordEncoder.matches(password, user.getPassword());
+                    return user;
+                });
+        return answer[0];
+    }
+
+    @Override
     public List<UserDto> getAll() {
         List<User> users = userRepository.findAll();
         log.info("IN UserService.getAll - {} users were found.", users.size());

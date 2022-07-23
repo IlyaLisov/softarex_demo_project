@@ -14,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.BASE_URL;
 import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.LOGIN_ULR;
+import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.REFRESH_URL;
 import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.REGISTER_URL;
 
 /**
@@ -30,6 +31,7 @@ public class SecurityConfig {
 
     private static final String LOGIN_ENDPOINT = BASE_URL + LOGIN_ULR;
     private static final String REGISTER_ENDPOINT = BASE_URL + REGISTER_URL;
+    private static final String REFRESH_ENDPOINT = BASE_URL + REFRESH_URL;
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
             throws Exception {
@@ -39,12 +41,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http
+                .cors()
+                .and()
                 .httpBasic().disable()
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(LOGIN_ENDPOINT).permitAll()
+                .antMatchers(LOGIN_ENDPOINT, REFRESH_ENDPOINT).permitAll()
                 .antMatchers(REGISTER_ENDPOINT).not().authenticated()
                 .anyRequest().authenticated()
                 .and()

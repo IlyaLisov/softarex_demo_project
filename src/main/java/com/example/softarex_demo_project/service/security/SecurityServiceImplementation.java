@@ -46,6 +46,15 @@ public class SecurityServiceImplementation implements SecurityService {
     }
 
     @Override
+    public boolean confirmUserPassword(UUID id, String password, HttpServletRequest request) {
+        if (validateUserAccess(id, request)) {
+            return userService.confirmUserPassword(id, password);
+        } else {
+            throw new AccessDeniedException();
+        }
+    }
+
+    @Override
     public List<UserDto> getAllUsers() {
         return userService.getAll();
     }

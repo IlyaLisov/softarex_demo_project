@@ -2,6 +2,7 @@ package com.example.softarex_demo_project.rest.authentication;
 
 import com.example.softarex_demo_project.dto.AuthenticationDto;
 import com.example.softarex_demo_project.dto.AuthenticationRequestDto;
+import com.example.softarex_demo_project.dto.RefreshRequestDto;
 import com.example.softarex_demo_project.dto.user.RegisterUserDto;
 import com.example.softarex_demo_project.dto.user.UserDto;
 import com.example.softarex_demo_project.security.jwt.JwtTokenProvider;
@@ -9,6 +10,7 @@ import com.example.softarex_demo_project.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +20,7 @@ import javax.validation.Valid;
 
 import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.BASE_URL;
 import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.LOGIN_ULR;
+import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.REFRESH_URL;
 import static com.example.softarex_demo_project.rest.authentication.AuthenticationRestUrls.REGISTER_URL;
 
 /**
@@ -28,6 +31,7 @@ import static com.example.softarex_demo_project.rest.authentication.Authenticati
  */
 @RestController
 @RequestMapping(value = BASE_URL)
+@CrossOrigin(origins = "http://localhost:3000")
 public class AuthenticationRestControllerV1 {
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -46,6 +50,7 @@ public class AuthenticationRestControllerV1 {
         UserDto user = securityService.getByUsername(username);
         authenticationDto.setUsername(username);
         authenticationDto.setToken(jwtTokenProvider.createToken(user.getId(), username, user.getRoles()));
+        authenticationDto.setRefreshToken(jwtTokenProvider.createRefreshToken(user.getId(), username));
         authenticationDto.setUserId(user.getId());
         return authenticationDto;
     }
@@ -53,5 +58,10 @@ public class AuthenticationRestControllerV1 {
     @PostMapping(REGISTER_URL)
     public UserDto register(@RequestBody @Valid RegisterUserDto registerUserDto) {
         return securityService.register(registerUserDto);
+    }
+
+    @PostMapping(REFRESH_URL)
+    public AuthenticationDto refresh(@RequestBody RefreshRequestDto refreshToken) {
+        return jwtTokenProvider.refreshTokens(refreshToken.getRefreshToken());
     }
 }

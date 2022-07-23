@@ -1,5 +1,9 @@
 package com.example.softarex_demo_project.security.jwt;
 
+import com.example.softarex_demo_project.dto.AuthenticationDto;
+import com.example.softarex_demo_project.model.exceptions.security.AccessDeniedException;
+import com.example.softarex_demo_project.model.user.User;
+import com.example.softarex_demo_project.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
@@ -17,7 +21,10 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -31,11 +38,22 @@ public class JwtTokenProvider {
     @Value("${jwt.token.secret}")
     private String secret;
 
-    @Value("${jwt.token.expired}")
-    private long validityInMilliseconds;
+    @Value("${jwt.token.accessToken}")
+    private long accessTokenValidityInMilliseconds;
+
+    @Value("${jwt.token.refreshToken}")
+    private long refreshTokenValidityInMilliseconds;
+
+    private UserDetailsService userDetailsService;
+    private final UserRepository userRepository;
+    private final Map<UUID, String> refreshTokensStorage;
 
     @Autowired
-    private UserDetailsService userDetailsService;
+    public JwtTokenProvider(UserDetailsService userDetailsService, UserRepository userRepository) {
+        this.userDetailsService = userDetailsService;
+        this.userRepository = userRepository;
+        this.refreshTokensStorage = new HashMap<>();
+    }
 
     @PostConstruct
     protected void init() {
@@ -47,13 +65,51 @@ public class JwtTokenProvider {
         claims.put("roles", roles);
         claims.put("userId", userId);
         Date now = new Date();
-        Date validity = new Date(now.getTime() + validityInMilliseconds);
+        Date validity = new Date(now.getTime() + accessTokenValidityInMilliseconds);
         return Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(validity)
                 .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
+    }
+
+    public String createRefreshToken(UUID userId, String username) {
+        if (refreshTokensStorage.containsKey(userId) && validateToken(refreshTokensStorage.get(userId))) {
+            return refreshTokensStorage.get(userId);
+        }
+        Claims claims = Jwts.claims().setSubject(username);
+        claims.put("userId", userId);
+        Date now = new Date();
+        Date validity = new Date(now.getTime() + refreshTokenValidityInMilliseconds);
+        String token = Jwts.builder()
+                .setClaims(claims)
+                .setIssuedAt(now)
+                .setExpiration(validity)
+                .signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+        refreshTokensStorage.put(userId, token);
+        return token;
+    }
+
+    public AuthenticationDto refreshTokens(String refreshToken) {
+        AuthenticationDto authenticationDto = new AuthenticationDto();
+        if (validateToken(refreshToken)) {
+            UUID userId = UUID.fromString(getUserId(refreshToken));
+            Optional<User> user = userRepository.findById(userId);
+            user
+                    .map((u) -> {
+                        authenticationDto.setUserId(u.getId());
+                        authenticationDto.setUsername(u.getUsername());
+                        authenticationDto.setToken(createToken(u.getId(), u.getUsername(), u.getRoles()));
+                        authenticationDto.setRefreshToken(refreshToken);
+                        return user;
+                    })
+                    .orElseThrow(AccessDeniedException::new);
+            return authenticationDto;
+        } else {
+            throw new AccessDeniedException();
+        }
     }
 
     public Authentication getAuthentication(String token) {

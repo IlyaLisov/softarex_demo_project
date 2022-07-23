@@ -5,12 +5,14 @@ import com.example.softarex_demo_project.dto.user.EditUserDto;
 import com.example.softarex_demo_project.dto.user.UserDto;
 import com.example.softarex_demo_project.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,7 @@ import static com.example.softarex_demo_project.rest.users.UserRestUrls.FROM_QUE
 import static com.example.softarex_demo_project.rest.users.UserRestUrls.ID_URL;
 import static com.example.softarex_demo_project.rest.users.UserRestUrls.TO_QUESTIONS_URL;
 import static com.example.softarex_demo_project.rest.users.UserRestUrls.USER_EMAILS;
+import static com.example.softarex_demo_project.rest.users.UserRestUrls.VALID_PASSWORD;
 
 /**
  * This class is a controller for users.
@@ -31,6 +34,7 @@ import static com.example.softarex_demo_project.rest.users.UserRestUrls.USER_EMA
  * @author Ilya Lisov
  * @version 1.0
  */
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(value = BASE_URL)
 public class UserRestControllerV1 {
@@ -40,6 +44,11 @@ public class UserRestControllerV1 {
     @GetMapping(ID_URL)
     public UserDto getUserById(@PathVariable(name = "id") UUID id, HttpServletRequest request) {
         return securityService.getUserById(id, request);
+    }
+
+    @GetMapping(VALID_PASSWORD)
+    public boolean confirmUserPassword(@PathVariable(name = "id") UUID id, @RequestParam String password, HttpServletRequest request) {
+        return securityService.confirmUserPassword(id, password, request);
     }
 
     @PutMapping(ID_URL)

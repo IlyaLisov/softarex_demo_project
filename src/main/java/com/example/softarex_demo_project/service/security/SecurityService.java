@@ -24,6 +24,8 @@ import java.util.UUID;
 public interface SecurityService {
     UserDto register(RegisterUserDto user) throws UserAlreadyExistsException;
 
+    boolean confirmUserPassword(UUID id, String password, HttpServletRequest request);
+
     List<UserDto> getAllUsers();
 
     UserDto getByUsername(String username) throws UserNotFoundException;

@@ -7,6 +7,7 @@ import com.example.softarex_demo_project.model.question.AnswerType;
 import com.example.softarex_demo_project.security.jwt.JwtTokenProvider;
 import com.example.softarex_demo_project.service.security.SecurityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ import static com.example.softarex_demo_project.rest.questions.QuestionsRestUrls
  * @author Ilya Lisov
  * @version 1.0
  */
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping(value = BASE_URL)
 public class QuestionsRestControllerV1 {
